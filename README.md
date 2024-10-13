@@ -3,7 +3,7 @@
 # Architecture
 ![coggiriMap drawio](https://github.com/user-attachments/assets/84ddcff8-1d23-499f-bc1c-84f01d2ecbea)
 
-#사용 기술
+# 사용 기술
 |사용 기술| 버젼|
 |:---:|:----|
 |Java|JAVA 17|
