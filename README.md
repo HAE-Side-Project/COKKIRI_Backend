@@ -1,7 +1,7 @@
 # COKKIRI_Backend
 
 # Architecture
-![image](https://github.com/user-attachments/assets/488052ea-6ac6-4b6a-a905-0b7e9cff8a0a)
+![coggiriMap drawio](https://github.com/user-attachments/assets/84ddcff8-1d23-499f-bc1c-84f01d2ecbea)
 
 #사용 기술
 |사용 기술| 버젼|
