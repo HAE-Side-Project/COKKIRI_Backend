@@ -15,3 +15,4 @@
 |CI/CD|Github Actions,Docker,Nginx|
 |Build Tool|Gradle|
 |myBatis|3.0.x|
+|Jasypt|3.0.x|
