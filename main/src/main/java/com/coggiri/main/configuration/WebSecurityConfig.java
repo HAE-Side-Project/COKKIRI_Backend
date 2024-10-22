@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,7 +39,7 @@ public class WebSecurityConfig {
                         authorizieHttpRequests
                                 .requestMatchers("/**").permitAll()
                 )
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin((formLogin ->
                         formLogin
                                 .usernameParameter("userId")
