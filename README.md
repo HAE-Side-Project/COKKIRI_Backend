@@ -3,7 +3,7 @@
 # Architecture
 ![coggiriMap drawio](https://github.com/user-attachments/assets/84ddcff8-1d23-499f-bc1c-84f01d2ecbea)
 # DB 
-![Coggiri](https://github.com/user-attachments/assets/9aac413f-ad10-4204-8f67-a021b241f794)
+![image](https://github.com/user-attachments/assets/4a64b5c6-579e-4625-abce-7f45765fe5a5)
 
 # 사용 기술
 |사용 기술| 버젼|
