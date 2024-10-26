@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class task {
+public class Task {
     private int taskId;
     private int id;
     private boolean groupOption;
@@ -14,7 +14,7 @@ public class task {
     private LocalDateTime registerDate;
     private LocalDateTime dueDate;
 
-    task(int taskId,int id,boolean groupOption, String taskName, int taskType,LocalDateTime registerDate,LocalDateTime dueDate){
+    Task(int taskId, int id, boolean groupOption, String taskName, int taskType, LocalDateTime registerDate, LocalDateTime dueDate){
         this.taskId = taskId;
         this.id = id;
         this.groupOption = groupOption;
