@@ -22,4 +22,8 @@ public class MybatisConfig {
         return factoryBean.getObject();
     }
 
+//    @Bean
+//    public SqlSessionTemplate sqlSessionTemplate(@Autowired SqlSessionFactory sqlSessionFactory){
+//        return new SqlSessionTemplate(sqlSessionFactory);
+//    }
 }
