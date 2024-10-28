@@ -39,12 +39,6 @@ public class WebSecurityConfig {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
         http
-//                .authorizeHttpRequests(auth ->
-//                        auth.anyRequest().permitAll()
-//                )
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .cors(AbstractHttpConfigurer::disable)
-//                .formLogin(AbstractHttpConfigurer::disable);
                 .authorizeHttpRequests((authorizieHttpRequests) ->
                         authorizieHttpRequests
                                 .requestMatchers("/**").permitAll()
