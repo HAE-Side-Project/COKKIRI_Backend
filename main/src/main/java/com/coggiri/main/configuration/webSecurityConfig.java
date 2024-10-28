@@ -5,10 +5,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,20 +28,31 @@ public class WebSecurityConfig {
     private UserService userService;
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
     WebSecurityConfig(UserService userService, PasswordEncoder passwordEncoder){
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Bean
     public SecurityFilterChain filterChain (HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception{
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
         http
+//                .authorizeHttpRequests(auth ->
+//                        auth.anyRequest().permitAll()
+//                )
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .cors(AbstractHttpConfigurer::disable)
+//                .formLogin(AbstractHttpConfigurer::disable);
                 .authorizeHttpRequests((authorizieHttpRequests) ->
                         authorizieHttpRequests
                                 .requestMatchers("/**").permitAll()
+                                .requestMatchers("/user/**").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configure(http))
                 .formLogin((formLogin ->
                         formLogin
                                 .usernameParameter("userId")
