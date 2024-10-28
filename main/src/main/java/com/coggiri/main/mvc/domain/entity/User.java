@@ -1,4 +1,4 @@
-package com.coggiri.main.mvc.domain;
+package com.coggiri.main.mvc.domain.entity;
 
 import lombok.Getter;
 
