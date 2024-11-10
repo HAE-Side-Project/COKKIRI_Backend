@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coggiri.main.mvc.repository.UserRepository">
+    <insert id="register" parameterType="com.coggiri.main.mvc.domain.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO user(userId,password,userName,email)
+        Values(
+            #{userId},
+            #{password},
+            #{userName},
+            #{email});
+    </insert>
+
+    <select id="findByUsername" resultType="com.coggiri.main.mvc.domain.entity.User">
+        SELECT id,userId,password,userName,email
+        FROM user
+        WHERE userId = #{userId}
+    </select>
+
+</mapper>
