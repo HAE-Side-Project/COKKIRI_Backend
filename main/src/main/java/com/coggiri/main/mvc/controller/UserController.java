@@ -1,8 +1,6 @@
 package com.coggiri.main.mvc.controller;
 
-import com.coggiri.main.mvc.domain.dto.UserRegisterDTO;
 import com.coggiri.main.mvc.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +17,6 @@ public class UserController {
 
     private UserService userService;
 
-    @Autowired
     UserController(UserService userService){
         this.userService = userService;
     }
@@ -30,8 +27,8 @@ public class UserController {
 //        return ResponseEntity.ok();
 //    }
     @PostMapping("register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody UserRegisterDTO userInfo) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<Map<String, Objects>> register(@RequestBody Map<String,String> userInfo) {
+        Map<String, Objects> response = new HashMap<>();
 
         try {
             boolean ret = userService.register(userInfo);
@@ -39,7 +36,7 @@ public class UserController {
                 response.put("success", true);
             } else {
                 response.put("success", true);
-                response.put("message","register Failed");
+//                response.put("message","register Failed");
             }
         } catch (Exception e) {
             response.put("success",false);
