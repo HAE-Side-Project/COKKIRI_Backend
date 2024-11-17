@@ -21,9 +21,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -46,15 +48,28 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((authorizieHttpRequests) ->
                         authorizieHttpRequests
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/resources/**", "/static/**", "/css/**").permitAll()
                                 .requestMatchers("/user/login").permitAll()
                                 .requestMatchers("/user/register").permitAll()
                                 .requestMatchers("/user/test").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configure(http))
+                .cors(corsCustomizer -> corsCustomizer
+                        .configurationSource(request -> {
+                            var cors = new CorsConfiguration();
+                            cors.setAllowedOrigins(List.of("*"));
+                            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            cors.setAllowedHeaders(List.of("*"));
+                            return cors;
+                        }))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        }))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
