@@ -16,4 +16,10 @@
         WHERE userId = #{userId}
     </select>
 
+    <select id="findByEmail
+" resultType="com.coggiri.main.mvc.domain.entity.User">
+        SELECT id,userId,password,userName,email
+        FROM user
+        WHERE email = #{email}
+    </select>
 </mapper>

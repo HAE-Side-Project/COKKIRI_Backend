@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface UserRepository {
     int register(User userRegisterDTO);
     Optional<User> findByUsername(String userId);
+    Optional<User> findByEmail(String email);
 }
