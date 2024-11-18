@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private final Key key;
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
 
     public JwtTokenProvider(@Value("${jwt.token.key}") String secretKey){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -38,7 +40,7 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
 
-        Date accessTokenExpiresln = new Date(now + 86400000);
+        Date accessTokenExpiresln = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth",authorities)
@@ -47,7 +49,7 @@ public class JwtTokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 86400000))
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
 
@@ -65,6 +67,7 @@ public class JwtTokenProvider {
                 Arrays.stream(claims.get("auth").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
+
         UserDetails principal = new User(claims.getSubject(),"",authorities);
         return new UsernamePasswordAuthenticationToken(principal,"",authorities);
     }

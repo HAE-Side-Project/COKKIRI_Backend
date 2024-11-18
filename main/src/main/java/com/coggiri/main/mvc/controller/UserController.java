@@ -37,8 +37,8 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
         try {
             JwtToken jwtToken = userService.login(userLoginDTO.getUserId(), userLoginDTO.getPassword());
-            log.info("request username = {}, password = {}", userLoginDTO.getUserId(), userLoginDTO.getPassword());
-            log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+            log.debug("request username = {}, password = {}", userLoginDTO.getUserId(), userLoginDTO.getPassword());
+            log.debug("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
             response.put("success",true);
             response.put("JwtToken",jwtToken);
             response.put("userId", userLoginDTO.getUserId());
@@ -53,6 +53,8 @@ public class UserController {
     @PostMapping("register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody UserDTO userInfo) {
         Map<String, Object> response = new HashMap<>();
+
+        log.debug("register called");
 
         try {
             userService.register(userInfo);
