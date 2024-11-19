@@ -1,6 +1,6 @@
 package com.coggiri.main.mvc.domain.entity;
 
-import lombok.Getter;
+import com.coggiri.main.customEnum.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 public class User implements UserDetails {
     private int id;
@@ -16,7 +18,9 @@ public class User implements UserDetails {
     private String password;
     private String userName;
     private String email;
-    private List<String> roles = new ArrayList<>();
+    private List<UserGroupRole> roles = new ArrayList<>();
+
+
     public User(int id,String userId,String password,String userName,String email){
         this.id = id;
         this.userId = userId;
@@ -25,7 +29,7 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public User(int id,String userId,String password,String userName,String email,List<String> roles){
+    public User(int id,String userId,String password,String userName,String email,List<UserGroupRole> roles){
         this.id = id;
         this.userId = userId;
         this.password = password;
@@ -34,9 +38,25 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public Role getRoleForGroup(Integer groupId) {
+        return roles.stream()
+                .filter(gr -> Integer.valueOf(gr.getGroupId()).equals(groupId))
+                .map(UserGroupRole::getRole)
+                .map(roleStr -> Role.valueOf(roleStr.startsWith("ROLE_") ? roleStr : "ROLE_" + roleStr))
+                .findFirst()
+                .orElse(Role.GUEST);
+    }
+
+    public String[] getRole() {
+        return roles.stream()
+                .map(gr -> "ROLE_" + Role.valueOf(gr.getRole()) + "_GROUP_" + gr.getGroupId())
+                .toArray(String[]::new);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
         return this.roles.stream()
+                .map(gr -> "ROLE_" + Role.valueOf(gr.getRole()) + "_GROUP_" + gr.getGroupId())
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
@@ -62,7 +82,11 @@ public class User implements UserDetails {
         return this.email;
     }
 
-    public List<String> getRoles(){
+    public void setRoles(List<UserGroupRole> roles){
+        this.roles = roles;
+    }
+
+    public List<UserGroupRole> getRoles(){
         return this.roles;
     }
 

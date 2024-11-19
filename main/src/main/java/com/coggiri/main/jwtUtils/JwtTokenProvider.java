@@ -1,11 +1,15 @@
-package com.coggiri.main.provider;
+package com.coggiri.main.jwtUtils;
 
+import com.coggiri.main.customEnum.Role;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
+import com.coggiri.main.mvc.domain.entity.UserGroupRole;
+import com.coggiri.main.mvc.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,31 +20,42 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
     private final Key key;
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private final UserRepository userRepository;
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
 
-    public JwtTokenProvider(@Value("${jwt.token.key}") String secretKey){
+    @Autowired
+    public JwtTokenProvider(@Value("${jwt.token.key}") String secretKey, UserRepository userRepository){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.userRepository = userRepository;
     }
 
     public JwtToken generateToken(Authentication authentication){
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+
+        Optional<com.coggiri.main.mvc.domain.entity.User> userInfo = userRepository.findByUsername(authentication.getName());
+        List<UserGroupRole> userRoles = userInfo.map(user -> userRepository.findGroupRolesByUserId(user.getId()))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String[] authorities = userRoles.stream()
+                .map(gr -> "ROLE_" + Role.valueOf(gr.getRole()) + "_GROUP_" + gr.getGroupId())
+                .toArray(String[]::new);
+//        String authorities = authentication.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
 
         Date accessTokenExpiresln = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth",authorities)
@@ -49,7 +64,7 @@ public class JwtTokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .setExpiration(refreshTokenExpiresIn)
                 .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
 
@@ -65,7 +80,7 @@ public class JwtTokenProvider {
 
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get("auth").toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(),"",authorities);

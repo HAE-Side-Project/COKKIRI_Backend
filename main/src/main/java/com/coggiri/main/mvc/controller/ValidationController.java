@@ -30,7 +30,7 @@ public class ValidationController {
     public ResponseEntity<Map<String,Object>> emailValidation(@RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
         Map<String, Object> response = new HashMap<>();
         try{
-            if(userService.findUserByEmail(mailDTO.getEmail()).isEmpty()){
+            if(userService.findUserByEmail(mailDTO.getEmail()).isPresent()){
                 throw new IllegalArgumentException("이미 인증에 사용된 이메일입니다.");
             }
             String authCode = mailService.sendSimpleMessage(mailDTO.getEmail());

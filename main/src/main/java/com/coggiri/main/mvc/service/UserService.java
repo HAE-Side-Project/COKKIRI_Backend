@@ -4,8 +4,9 @@ import com.coggiri.main.customEnum.Role;
 import com.coggiri.main.mvc.domain.dto.UserDTO;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
 import com.coggiri.main.mvc.domain.entity.User;
+import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.UserRepository;
-import com.coggiri.main.provider.JwtTokenProvider;
+import com.coggiri.main.jwtUtils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -39,8 +40,7 @@ public class UserService{
         }
 
         String encodePassword = passwordEncoder.encode(userInfo.getPassword());
-        List<String> roles = new ArrayList<>();
-        roles.add(Role.USER);
+        List<UserGroupRole> roles = new ArrayList<>();
 
         User user = userInfo.toUser(encodePassword,roles);
 
@@ -48,7 +48,7 @@ public class UserService{
             throw new IllegalArgumentException("데이터베이스 저장 실패");
         }
 
-        userRepository.addRole()
+        userRepository.addUserRole(new UserGroupRole(user.getId(),0, Role.USER.name()));
 
     }
 
