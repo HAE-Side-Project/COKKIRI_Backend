@@ -1,5 +1,6 @@
 package com.coggiri.main.mvc.service;
 
+import com.coggiri.main.customEnum.Role;
 import com.coggiri.main.mvc.domain.dto.UserDTO;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
 import com.coggiri.main.mvc.domain.entity.User;
@@ -39,12 +40,16 @@ public class UserService{
 
         String encodePassword = passwordEncoder.encode(userInfo.getPassword());
         List<String> roles = new ArrayList<>();
-        roles.add("USER");
+        roles.add(Role.USER);
 
         User user = userInfo.toUser(encodePassword,roles);
+
         if(userRepository.register(user) == 0){
             throw new IllegalArgumentException("데이터베이스 저장 실패");
         }
+
+        userRepository.addRole()
+
     }
 
     public JwtToken login(String userId, String password){

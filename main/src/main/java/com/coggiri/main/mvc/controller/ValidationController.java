@@ -16,8 +16,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/validation")
 public class ValidationController {
-    private MailService mailService;
-    private UserService userService;
+    private final MailService mailService;
+    private final UserService userService;
 
     @Autowired
     ValidationController(MailService mailService, UserService userService){
