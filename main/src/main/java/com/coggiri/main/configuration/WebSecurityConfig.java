@@ -42,7 +42,6 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((authorizieHttpRequests) ->
                         authorizieHttpRequests
-//                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/resources/**", "/static/**", "/css/**").permitAll()
                                 .requestMatchers(
                                         "/swagger-ui/**",
