@@ -1,6 +1,6 @@
 package com.coggiri.main.mvc.service;
 
-import com.coggiri.main.customEnum.Role;
+import com.coggiri.main.customEnums.Role;
 import com.coggiri.main.mvc.domain.dto.UserDTO;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
 import com.coggiri.main.mvc.domain.entity.User;
@@ -45,10 +45,13 @@ public class UserService{
         User user = userInfo.toUser(encodePassword,roles);
 
         if(userRepository.register(user) == 0){
-            throw new IllegalArgumentException("데이터베이스 저장 실패");
+            throw new IllegalArgumentException("회원 정보 데이터베이스 저장 실패");
         }
 
-        userRepository.addUserRole(new UserGroupRole(user.getId(),0, Role.USER.name()));
+        if(userRepository.addUserRole(new UserGroupRole(user.getId(),0, Role.USER.name())) == 0){
+            throw new IllegalArgumentException("회원 권한 데이터베이스 저장 실패");
+        }
+
 
     }
 

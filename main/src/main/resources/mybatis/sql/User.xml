@@ -11,11 +11,11 @@
     </insert>
 
     <insert id="addUserRole" parameterType="com.coggiri.main.mvc.domain.entity.UserGroupRole" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO user_group_role(user_Id,group_Id,role)
+        INSERT INTO user_group_role(user_id,group_id,role)
         Values(
             #{userId},
             #{groupId},
-            #{roleId}
+            #{role}
         );
     </insert>
 

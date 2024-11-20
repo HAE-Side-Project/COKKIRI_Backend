@@ -1,4 +1,4 @@
-package com.coggiri.main.customEnum;
+package com.coggiri.main.customEnums;
 
 import lombok.Getter;
 

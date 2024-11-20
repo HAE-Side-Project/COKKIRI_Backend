@@ -42,11 +42,15 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((authorizieHttpRequests) ->
                         authorizieHttpRequests
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+//                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/resources/**", "/static/**", "/css/**").permitAll()
-                                .requestMatchers("/user/login").permitAll()
-                                .requestMatchers("/user/register").permitAll()
-                                .requestMatchers("/user/test").hasAuthority("USER_GROUP_0")
+                                .requestMatchers(
+                                        "/swagger-ui/**",
+                                        "/swagger-resources/**",
+                                        "/v3/api-docs/**"
+                                ).hasAnyAuthority("ROLE_SUPER_ADMIN_GROUP_0")
+                                .requestMatchers("/api/user/**").permitAll()
+                                .requestMatchers("/api/validate/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

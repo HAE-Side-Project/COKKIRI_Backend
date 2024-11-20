@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/validation")
+@RequestMapping("/api/validate")
 public class ValidationController {
     private final MailService mailService;
     private final UserService userService;

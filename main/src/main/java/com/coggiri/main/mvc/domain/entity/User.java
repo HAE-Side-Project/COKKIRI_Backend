@@ -1,6 +1,6 @@
 package com.coggiri.main.mvc.domain.entity;
 
-import com.coggiri.main.customEnum.Role;
+import com.coggiri.main.customEnums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,7 +36,7 @@ public class User implements UserDetails {
         this.email = email;
         this.roles = roles;
     }
-
+// 화이팅~
     public Role getRoleForGroup(Integer groupId) {
         return roles.stream()
                 .filter(gr -> Integer.valueOf(gr.getGroupId()).equals(groupId))

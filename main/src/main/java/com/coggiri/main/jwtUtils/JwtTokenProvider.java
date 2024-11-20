@@ -1,6 +1,6 @@
 package com.coggiri.main.jwtUtils;
 
-import com.coggiri.main.customEnum.Role;
+import com.coggiri.main.customEnums.Role;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.UserRepository;
@@ -47,9 +47,6 @@ public class JwtTokenProvider {
         String[] authorities = userRoles.stream()
                 .map(gr -> "ROLE_" + Role.valueOf(gr.getRole()) + "_GROUP_" + gr.getGroupId())
                 .toArray(String[]::new);
-//        String authorities = authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
 
@@ -77,10 +74,12 @@ public class JwtTokenProvider {
         if(claims.get("auth") == null){
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
+        System.out.println("authentication Role: " + claims.get("auth").toString());
+        List<String> roles = (List<String>) claims.get("auth");
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("auth").toString().split(","))
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                roles.stream()
+                        .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(),"",authorities);
