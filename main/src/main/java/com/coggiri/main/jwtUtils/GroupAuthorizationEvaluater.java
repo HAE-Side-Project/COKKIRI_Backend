@@ -1,0 +1,21 @@
+package com.coggiri.main.jwtUtils;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+import com.coggiri.main.customEnums.Role;
+
+@Component("groupAuthorizationEvaluater")
+public class GroupAuthorizationEvaluater {
+    public boolean hasGroupRole(Authentication authentication, int groupId, Role requireRole){
+        if(authentication == null || !authentication.isAuthenticated()) return false;
+
+        return authentication.getAuthorities().stream()
+                .map(authority -> authority.getAuthority())
+                .filter(authority -> authority.contains("GROUP_" + groupId))
+                .map(authority -> {
+                    String roleName = authority.substring(5,authority.lastIndexOf("_GROUP_"));
+                    return Role.valueOf(roleName);
+                })
+                .anyMatch(role -> role.getLevel() <= role.getLevel());
+    }
+}
