@@ -4,6 +4,7 @@ import com.coggiri.main.jwtUtils.RequireGroupRole;
 import com.coggiri.main.mvc.domain.dto.UserLoginDTO;
 import com.coggiri.main.mvc.domain.dto.UserDTO;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
+import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,13 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 @Tag(name = "사용자 로그인", description = "로그인 관련 API")
 @RestController
 @RequestMapping("/api/user")
@@ -102,5 +102,19 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    
+    @ResponseBody
+    @PostMapping("changePassword")
+    public ResponseEntity<Map<String, Object>> changePassword(@Parameter(description = "사용자 정보", example = "userId") @RequestBody UserLoginDTO userLoginDTO){
+        Map<String, Object> response = new HashMap<>();
+        Optional<User> user = userService.findUserById(userLoginDTO.getUserId());
+
+        try{
+            userService.changePassword(user,userLoginDTO.getPassword());
+        }catch (Exception e){
+            response.put("success",false);
+            response.put("message",e.getMessage());
+        }
+
+        return ResponseEntity.ok(response);
+    }
 }

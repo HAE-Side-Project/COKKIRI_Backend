@@ -10,6 +10,10 @@
             #{email});
     </insert>
 
+    <update id="changePassword" parameterType="com.coggiri.main.mvc.domain.entity.User">
+        UPDATE user SET password=#{password} where id = #{id}
+    </update>
+
     <insert id="addUserRole" parameterType="com.coggiri.main.mvc.domain.entity.UserGroupRole" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO user_group_role(user_id,group_id,role)
         Values(

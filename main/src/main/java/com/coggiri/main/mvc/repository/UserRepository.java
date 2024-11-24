@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface UserRepository {
     int register(User userRegisterDTO);
     int addUserRole(UserGroupRole userGroupRole);
+    int changePassword(User user);
     Optional<User> findByUsername(String userId);
     Optional<User> findByEmail(String email);
     List<UserGroupRole> findGroupRolesByUserId(int userId);

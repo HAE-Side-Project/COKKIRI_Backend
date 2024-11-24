@@ -36,7 +36,7 @@ public class User implements UserDetails {
         this.email = email;
         this.roles = roles;
     }
-// 화이팅~
+
     public Role getRoleForGroup(Integer groupId) {
         return roles.stream()
                 .filter(gr -> Integer.valueOf(gr.getGroupId()).equals(groupId))

@@ -63,6 +63,18 @@ public class UserService{
         return jwtToken;
     }
 
+    public void changePassword(Optional<User> userInfo, String nextPassword){
+        User user = userInfo.orElseThrow(() ->
+                new IllegalArgumentException("사용자를 찾을 수 없습니다. "));
+        try{
+            String encodeNextPassword = passwordEncoder.encode(nextPassword);
+            User nextUser = new User(user.getId(),user.getUsername(),encodeNextPassword,user.getName(),user.getEmail());
+            userRepository.changePassword(user);
+        }catch (Exception e){
+            throw new IllegalArgumentException();
+        }
+    }
+
     public Optional<User> findUserById(String userId){
         return userRepository.findByUsername(userId);
     }

@@ -50,7 +50,8 @@ public class ValidationController {
             })
     @ResponseBody
     @PostMapping("/sendEmail")
-    public ResponseEntity<Map<String,Object>> sendVerificationEmail(@Parameter(description = "이메일 정보", example = "1234@naver.com") @RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
+    public ResponseEntity<Map<String,Object>> sendVerificationEmail(@Parameter(description = "이메일 정보", example = "1234@naver.com")
+                                                                        @RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
         Map<String, Object> response = new HashMap<>();
         try{
             if(userService.findUserByEmail(mailDTO.getEmail()).isPresent()){

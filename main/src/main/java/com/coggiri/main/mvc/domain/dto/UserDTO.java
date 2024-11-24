@@ -47,17 +47,6 @@ public class UserDTO {
         this.roles = roles;
     }
 
-//    static public UserDTO toDTO(User user){
-//        return new UserDTO(
-//                user.getId(),
-//                user.getUsername(),
-//                user.getPassword(),
-//                user.getName(),
-//                user.getEmail(),
-//                new ArrayList<>() user.getRoles()
-//        );
-//    }
-
     public User toUser(String encodedPassword,List<UserGroupRole> roles){
         return new User(id,this.userId,encodedPassword,this.userName,this.email,roles);
     }
