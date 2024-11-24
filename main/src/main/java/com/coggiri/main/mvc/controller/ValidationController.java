@@ -1,6 +1,8 @@
 package com.coggiri.main.mvc.controller;
 
+import com.coggiri.main.customEnums.EmailErrorStatus;
 import com.coggiri.main.mvc.domain.dto.MailDTO;
+import com.coggiri.main.mvc.domain.dto.VerificationInfo;
 import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.service.MailService;
 import com.coggiri.main.mvc.service.UserService;
@@ -47,16 +49,17 @@ public class ValidationController {
                 )
             })
     @ResponseBody
-    @PostMapping("/email")
-    public ResponseEntity<Map<String,Object>> emailValidation(@Parameter(description = "이메일 정보", example = "1234@naver.com") @RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
+    @PostMapping("/sendEmail")
+    public ResponseEntity<Map<String,Object>> sendVerificationEmail(@Parameter(description = "이메일 정보", example = "1234@naver.com") @RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
         Map<String, Object> response = new HashMap<>();
         try{
             if(userService.findUserByEmail(mailDTO.getEmail()).isPresent()){
                 throw new IllegalArgumentException("이미 인증에 사용된 이메일입니다.");
             }
-            String authCode = mailService.sendSimpleMessage(mailDTO.getEmail());
+            VerificationInfo ret = mailService.sendSimpleMessage(mailDTO.getEmail());
             response.put("success",true);
-            response.put("authCode",authCode);
+            response.put("authCode",ret.getCode());
+            response.put("expireTime",ret.getExpireDate());
         }catch (Exception e){
             response.put("success",false);
             response.put("message",e.getMessage());
@@ -64,6 +67,53 @@ public class ValidationController {
 
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "인증번호 검증",description = "이메일 인증번호 검증 API",
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "이메일 인증번호 검증",
+                        content = @Content(
+                                schemaProperties = {
+                                        @SchemaProperty(name = "success", schema = @Schema(type = "boolean", description = "성공 여부")),
+                                        @SchemaProperty(name = "message", schema = @Schema(type = "string", description = "성공 및 에러 메세지"))
+                                }
+                        )
+                )
+            })
+    @ResponseBody
+    @PostMapping("/verifyEmail")
+    public ResponseEntity<Map<String,Object>> validateCode(@Parameter(description = "이메일 정보", example = "1234@naver.com") @RequestBody MailDTO mailDTO){
+        Map<String,Object> response = new HashMap<>();
+        EmailErrorStatus result = mailService.verifyCode(mailDTO.getEmail(),mailDTO.getAuthCode());
+
+        switch (result){
+            case NOT_EXIST:
+                response.put("success",false);
+                response.put("message","인증번호를 발급받지 않은 이메일입니다.");
+                break;
+            case EXPIRED:
+                response.put("success",false);
+                response.put("message","만료된 인증번호입니다.");
+                break;
+
+            case ILLEGAL_ACCESS:
+                response.put("success",false);
+                response.put("message","비정상적으로 잦은 접근 시도입니다.");
+                break;
+            case NOT_EQUAL:
+                response.put("success",false);
+                response.put("message","발급된 인증번호와 다릅니다");
+                break;
+            case VALID:
+                response.put("success",true);
+                response.put("message","인증이 완료되었습니다");
+                break;
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "아이디 유효 검사", description = "아이디 중복 검사 API",
             responses = {
                 @ApiResponse(
@@ -78,7 +128,7 @@ public class ValidationController {
                 )
             })
     @PostMapping("/Id")
-    public ResponseEntity<Map<String,Object>> idValidation(@Parameter(name = "userId", description = "유저아이디", example = "user") @RequestParam String userId){
+    public ResponseEntity<Map<String,Object>> validateId(@Parameter(name = "userId", description = "유저아이디", example = "user") @RequestParam String userId){
         Map<String, Object> response = new HashMap<>();
         if(userService.findUserById(userId).isPresent()){
             response.put("success",true);
