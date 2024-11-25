@@ -35,7 +35,7 @@ public class ValidationController {
         this.userService = userService;
     }
 
-    @Operation(summary = "이메일 인증", description = "이메일 인증 API",
+    @Operation(summary = "이메일 인증번호 발급", description = "이메일 인증 API",
             responses = {
                 @ApiResponse(
                         responseCode = "200",

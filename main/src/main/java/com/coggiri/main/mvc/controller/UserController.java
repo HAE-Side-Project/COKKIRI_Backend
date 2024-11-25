@@ -102,14 +102,28 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API",
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "비밀번호 변경",
+                        content = @Content(
+                                schemaProperties = {
+                                        @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
+                                        @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지"))
+                                }
+                        )
+                )
+            })
     @ResponseBody
     @PostMapping("changePassword")
     public ResponseEntity<Map<String, Object>> changePassword(@Parameter(description = "사용자 정보", example = "userId") @RequestBody UserLoginDTO userLoginDTO){
         Map<String, Object> response = new HashMap<>();
-        Optional<User> user = userService.findUserById(userLoginDTO.getUserId());
 
         try{
-            userService.changePassword(user,userLoginDTO.getPassword());
+            userService.changePassword(userLoginDTO);
+            response.put("success",true);
+            response.put("message","비밀변경 완료");
         }catch (Exception e){
             response.put("success",false);
             response.put("message",e.getMessage());

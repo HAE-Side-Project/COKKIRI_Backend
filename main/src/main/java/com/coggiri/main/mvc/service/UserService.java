@@ -2,6 +2,7 @@ package com.coggiri.main.mvc.service;
 
 import com.coggiri.main.customEnums.Role;
 import com.coggiri.main.mvc.domain.dto.UserDTO;
+import com.coggiri.main.mvc.domain.dto.UserLoginDTO;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
 import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
@@ -13,11 +14,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Service
 public class UserService{
     private final UserRepository userRepository;
@@ -63,13 +66,13 @@ public class UserService{
         return jwtToken;
     }
 
-    public void changePassword(Optional<User> userInfo, String nextPassword){
-        User user = userInfo.orElseThrow(() ->
+    public void changePassword(UserLoginDTO userLoginDTO){
+        User user = findUserById(userLoginDTO.getUserId()).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다. "));
         try{
-            String encodeNextPassword = passwordEncoder.encode(nextPassword);
+            String encodeNextPassword = passwordEncoder.encode(userLoginDTO.getPassword());
             User nextUser = new User(user.getId(),user.getUsername(),encodeNextPassword,user.getName(),user.getEmail());
-            userRepository.changePassword(user);
+            userRepository.changePassword(nextUser);
         }catch (Exception e){
             throw new IllegalArgumentException();
         }
