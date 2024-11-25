@@ -1,19 +1,26 @@
 package com.coggiri.main.mvc.service;
 
+import com.coggiri.main.customEnums.EmailErrorStatus;
+import com.coggiri.main.mvc.domain.dto.VerificationInfo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class MailService {
     private final JavaMailSender javaMailSender;
     private static final String senderEmail = "woodevelop3@gmail.com";
+    private final Map<String, VerificationInfo> verificationInfoCache = new ConcurrentHashMap<>();
 
     public String createNumber(){
         Random random = new Random();
@@ -48,7 +55,7 @@ public class MailService {
         return message;
     }
 
-    public String sendSimpleMessage(String sendEmail) throws MessagingException{
+    public VerificationInfo sendSimpleMessage(String sendEmail) throws MessagingException{
         String number = createNumber();
 
         MimeMessage message = createMail(sendEmail, number);
@@ -59,6 +66,45 @@ public class MailService {
             throw new IllegalArgumentException("메일 발송 중 오류가 발생했습니다.");
         }
 
-        return number;
+        LocalDateTime limitTime = LocalDateTime.now().plusMinutes(5);
+        VerificationInfo ret = new VerificationInfo(number, limitTime,0);
+        verificationInfoCache.put(sendEmail,new VerificationInfo(number, limitTime,0));
+
+        return ret;
+    }
+
+    public EmailErrorStatus verifyCode(String email, String code){
+        VerificationInfo info = verificationInfoCache.get(email);
+        int ret = 0;
+        if(info == null) return EmailErrorStatus.NOT_EXIST;
+
+        if(LocalDateTime.now().isAfter(info.getExpireDate())){
+            verificationInfoCache.remove(email);
+            return EmailErrorStatus.EXPIRED;
+        }
+
+        info.addAttempts();
+
+        if(info.getAttempts() >= 5){
+            verificationInfoCache.remove(email);
+            return EmailErrorStatus.ILLEGAL_ACCESS;
+        }
+
+        boolean isValid = code.equals(info.getCode());
+        if(isValid) {
+            verificationInfoCache.remove(email);
+            return EmailErrorStatus.VALID;
+        }
+
+        return EmailErrorStatus.NOT_EQUAL;
+    }
+
+    @Scheduled(fixedRate = 300000)
+    public void cleanupExpiredCodes(){
+        if(verificationInfoCache.isEmpty()) return;
+
+        LocalDateTime now = LocalDateTime.now();
+        verificationInfoCache.entrySet().removeIf(entry ->
+                now.isAfter(entry.getValue().getExpireDate()));
     }
 }

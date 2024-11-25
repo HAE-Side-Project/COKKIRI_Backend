@@ -3,12 +3,13 @@ package com.coggiri.main.mvc.domain.entity;
 import lombok.Getter;
 
 @Getter
-public class Member {
+public class UserGroupRole {
+    private int id;
     private int userId;
     private int groupId;
-    private int role;
+    private String role;
 
-    Member(int userId,int groupId,int role){
+    public UserGroupRole(int userId, int groupId, String role){
         this.userId = userId;
         this.groupId = groupId;
         this.role = role;

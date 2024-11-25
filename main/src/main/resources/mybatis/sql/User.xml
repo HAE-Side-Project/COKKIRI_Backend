@@ -10,10 +10,34 @@
             #{email});
     </insert>
 
+    <update id="changePassword" parameterType="com.coggiri.main.mvc.domain.entity.User">
+        UPDATE user SET password=#{password} where id = #{id}
+    </update>
+
+    <insert id="addUserRole" parameterType="com.coggiri.main.mvc.domain.entity.UserGroupRole" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO user_group_role(user_id,group_id,role)
+        Values(
+            #{userId},
+            #{groupId},
+            #{role}
+        );
+    </insert>
+
     <select id="findByUsername" resultType="com.coggiri.main.mvc.domain.entity.User">
         SELECT id,userId,password,userName,email
         FROM user
         WHERE userId = #{userId}
     </select>
 
+    <select id="findByEmail" resultType="com.coggiri.main.mvc.domain.entity.User">
+        SELECT id,userId,password,userName,email
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <select id="findGroupRolesByUserId" resultType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
+        SELECT id, user_id as userId, group_id as groupId, role
+        FROM user_group_role
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

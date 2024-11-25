@@ -30,10 +30,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails createUserDetails(User user){
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(passwordEncoder.encode(user.getPassword()))
-                .roles(user.getRoles().toArray(new String[0]))
-                .build();
+        user.setRoles(userRepository.findGroupRolesByUserId(user.getId()));
+
+        if (user.getRole() == null || user.getRole().length == 0) {
+            throw new RuntimeException("사용자에게 역할이 없습니다.");
+        }
+
+        return user;
     }
 }
