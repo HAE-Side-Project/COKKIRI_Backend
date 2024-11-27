@@ -1,12 +1,18 @@
 package com.coggiri.main.mvc.service;
 
+import com.coggiri.main.customEnums.Role;
 import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
+import com.coggiri.main.mvc.domain.entity.Group;
 import com.coggiri.main.mvc.domain.entity.User;
+import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @Service
 public class GroupService {
@@ -27,10 +33,27 @@ public class GroupService {
         User user = userService.findUserById(userId).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
+        String filePath = "";
         if(!image.isEmpty()){
             String fileExtension = getFileExtension(image.getOriginalFilename());
+
+            if(!isValidImageExtension(fileExtension)) return false;
+
             String fileName = groupRegisterDTO.getGroupName();
+            filePath = uploadDirectory + "/" + fileName +"."+ fileExtension;
+            try{
+                saveFile(image,filePath);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
+
+        Group groupInfo = new Group(groupRegisterDTO,filePath);
+        groupRepository.createGroup(groupInfo);
+        if(userService.addUserRole(new UserGroupRole(user.getId(),groupInfo.getGroupId(), Role.ADMIN.name())) == 0){
+            return false;
+        }
+
         return true;
     }
 
@@ -49,5 +72,15 @@ public class GroupService {
             }
         }
         return false;
+    }
+
+    private void saveFile(MultipartFile file, String filePath) {
+        File targetFile = new File(filePath);
+        try {
+            file.transferTo(targetFile);
+        } catch (IOException e) {
+            System.out.println("saveFile:" + e.getMessage());
+            throw new RuntimeException("File not saved");
+        }
     }
 }

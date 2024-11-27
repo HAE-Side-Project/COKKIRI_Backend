@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/group")
 public class GroupController {
+
     private GroupService groupService;
 
     @Autowired
@@ -26,12 +27,20 @@ public class GroupController {
     }
 
     @PostMapping("/createGroup")
-    public ResponseEntity<Map<String,Object>> createGroup( @RequestPart(value = "userID",required = true) String userId,
+    public ResponseEntity<Map<String,Object>> createGroup( @RequestPart(value = "userId",required = true) String userId,
                                                            @RequestPart(value = "groupInfo",required = true) GroupRegisterDTO groupRegisterDTO,
                                                           @RequestPart(value = "image",required = false) MultipartFile image){
         Map<String,Object> response = new HashMap<>();
-        groupService.createGroup(userId,groupRegisterDTO,image);
 
+        System.out.println("userId:" + userId);
+
+        if(groupService.createGroup(userId,groupRegisterDTO,image)){
+            response.put("success",true);
+            response.put("message","그룹 생성 완료");
+        }else{
+            response.put("success",false);
+            response.put("message","그룹 생성 실패");
+        }
 
         return ResponseEntity.ok(response);
     }

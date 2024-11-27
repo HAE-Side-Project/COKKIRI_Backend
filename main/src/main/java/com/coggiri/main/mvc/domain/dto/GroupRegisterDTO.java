@@ -4,15 +4,19 @@ import lombok.Getter;
 
 @Getter
 public class GroupRegisterDTO {
-    private int groupType;
+    private int groupCategory;
     private String groupName;
     private String groupIntro;
     private String groupRule;
     private String groupCondition;
 
-    GroupRegisterDTO(int groupType,String groupName, String groupIntro,
+    GroupRegisterDTO() {
+
+    }
+
+    GroupRegisterDTO(int groupCategory,String groupName, String groupIntro,
                      String groupRule, String groupCondition){
-        this.groupType = groupType;
+        this.groupCategory = groupCategory;
         this.groupName = groupName;
         this.groupIntro = groupIntro;
         this.groupRule = groupRule;
