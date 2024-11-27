@@ -15,4 +15,5 @@ public interface UserRepository {
     Optional<User> findByUsername(String userId);
     Optional<User> findByEmail(String email);
     List<UserGroupRole> findGroupRolesByUserId(int userId);
+    Optional<UserGroupRole> findGroupRoleByUserId(int userId,int groupId);
 }
