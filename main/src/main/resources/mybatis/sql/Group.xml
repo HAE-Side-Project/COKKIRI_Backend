@@ -13,4 +13,20 @@
             #{thumbnailPath}
         );
     </insert>
+    
+    <select id="getGroupList" parameterType="map" resultType="com.coggiri.main.mvc.domain.dto.GroupInfoDTO">
+        select
+            group_id as groupId,
+            group_category as groupCategory,
+            group_name as groupName,
+            group_number as groupNumber,
+            thumbnail_path as thumbnailPath
+        From groups
+        where 1=1
+        <if test="keyword != null and keyword != ''">
+            AND group_name LIKE CONCAT('%',#{keyword},'%')
+        </if>
+        Order By group_id ASC
+        LIMIT 100 OFFSET #{offset}
+    </select>
 </mapper>

@@ -11,18 +11,19 @@ public class Group {
     private String groupIntro;
     private String groupRule;
     private String groupCondition;
-    private int groupNumber = 10;
+    private int groupNumber = 1;
     private String thumbnailPath;
 
 
     Group(int groupId, int groupCategory, String groupName, String groupIntro,
-          String groupRule, String groupCondition, String thumbnailPath){
+          String groupRule, String groupCondition,int groupNumber ,String thumbnailPath){
         this.groupId = groupId;
         this.groupCategory = groupCategory;
         this.groupName = groupName;
         this.groupIntro = groupIntro;
         this.groupRule = groupRule;
         this.groupCondition =groupCondition;
+        this.groupNumber = groupNumber;
         this.thumbnailPath = thumbnailPath;
     }
 
