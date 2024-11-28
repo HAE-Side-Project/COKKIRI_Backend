@@ -27,6 +27,6 @@
             AND group_name LIKE CONCAT('%',#{keyword},'%')
         </if>
         Order By group_id ASC
-        LIMIT 100 OFFSET #{offset}
+        LIMIT #{page} OFFSET #{offset}
     </select>
 </mapper>

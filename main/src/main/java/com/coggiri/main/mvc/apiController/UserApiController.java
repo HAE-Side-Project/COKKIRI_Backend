@@ -1,19 +1,15 @@
-package com.coggiri.main.mvc.controller;
+package com.coggiri.main.mvc.apiController;
 
-import com.coggiri.main.jwtUtils.RequireGroupRole;
 import com.coggiri.main.mvc.domain.dto.UserLoginDTO;
 import com.coggiri.main.mvc.domain.dto.UserDTO;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
-import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +19,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Tag(name = "사용자 로그인", description = "로그인 관련 API")
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class UserApiController {
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private UserService userService;
 
     @Autowired
-    UserController(UserService userService){
+    UserApiController(UserService userService){
         this.userService = userService;
     }
 
