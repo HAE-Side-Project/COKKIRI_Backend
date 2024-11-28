@@ -51,11 +51,13 @@ public class UserService{
             throw new IllegalArgumentException("회원 정보 데이터베이스 저장 실패");
         }
 
-        if(userRepository.addUserRole(new UserGroupRole(user.getId(),0, Role.USER.name())) == 0){
+        if(addUserRole(new UserGroupRole(user.getId(),0, Role.USER.name())) == 0){
             throw new IllegalArgumentException("회원 권한 데이터베이스 저장 실패");
         }
+    }
 
-
+    public int addUserRole(UserGroupRole userGroupRole){
+        return userRepository.addUserRole(userGroupRole);
     }
 
     public JwtToken login(String userId, String password){

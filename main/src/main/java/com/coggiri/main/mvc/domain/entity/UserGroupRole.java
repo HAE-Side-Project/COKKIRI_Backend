@@ -1,5 +1,6 @@
 package com.coggiri.main.mvc.domain.entity;
 
+import com.coggiri.main.customEnums.Role;
 import lombok.Getter;
 
 @Getter

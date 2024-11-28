@@ -40,22 +40,23 @@ public class JwtTokenProvider {
 
     public JwtToken generateToken(Authentication authentication){
 
-        Optional<com.coggiri.main.mvc.domain.entity.User> userInfo = userRepository.findByUsername(authentication.getName());
-        List<UserGroupRole> userRoles = userInfo.map(user -> userRepository.findGroupRolesByUserId(user.getId()))
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        String[] authorities = userRoles.stream()
-                .map(gr -> "ROLE_" + Role.valueOf(gr.getRole()) + "_GROUP_" + gr.getGroupId())
-                .toArray(String[]::new);
+        com.coggiri.main.mvc.domain.entity.User userInfo = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         long now = (new Date()).getTime();
 
         Date accessTokenExpiresln = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
 
+//        String accessToken = Jwts.builder()
+//                .setSubject(authentication.getName())
+//                .claim("auth",authorities)
+//                .setExpiration(accessTokenExpiresln)
+//                .signWith(key, SignatureAlgorithm.HS256)
+//                .compact();
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim("auth",authorities)
+                .claim("userId",userInfo.getId())
                 .setExpiration(accessTokenExpiresln)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -70,19 +71,23 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String accessToken){
         Claims claims = parseClaims(accessToken);
+        String userName = claims.getSubject();
+        Integer userId = claims.get("userId",Integer.class);
 
-        if(claims.get("auth") == null){
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+        List<UserGroupRole> userRoles = userRepository.findGroupRolesByUserId(userId);
+
+        if(userRoles.isEmpty()){
+            throw new RuntimeException("권한이 없습니다.");
         }
-        System.out.println("authentication Role: " + claims.get("auth").toString());
-        List<String> roles = (List<String>) claims.get("auth");
 
         Collection<? extends GrantedAuthority> authorities =
-                roles.stream()
-                        .map(SimpleGrantedAuthority::new)
+                userRoles.stream()
+                        .map(role -> new SimpleGrantedAuthority(
+                                "ROLE_" + role.getRole() + "_GROUP_" + role.getGroupId()
+                        ))
                         .collect(Collectors.toList());
 
-        UserDetails principal = new User(claims.getSubject(),"",authorities);
+        UserDetails principal = new User(userName,"",authorities);
         return new UsernamePasswordAuthenticationToken(principal,"",authorities);
     }
 

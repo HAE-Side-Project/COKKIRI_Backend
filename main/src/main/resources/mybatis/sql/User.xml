@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.coggiri.main.mvc.repository.UserRepository">
     <insert id="register" parameterType="com.coggiri.main.mvc.domain.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO user(userId,password,userName,email)
+        INSERT INTO user(user_id,password,user_name,email)
         Values(
             #{userId},
             #{password},
@@ -24,13 +24,13 @@
     </insert>
 
     <select id="findByUsername" resultType="com.coggiri.main.mvc.domain.entity.User">
-        SELECT id,userId,password,userName,email
+        SELECT id,user_id,password,user_name,email
         FROM user
-        WHERE userId = #{userId}
+        WHERE user_id = #{userId}
     </select>
 
     <select id="findByEmail" resultType="com.coggiri.main.mvc.domain.entity.User">
-        SELECT id,userId,password,userName,email
+        SELECT id,user_id,password,user_name,email
         FROM user
         WHERE email = #{email}
     </select>
