@@ -10,7 +10,6 @@ import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,11 +39,16 @@ public class GroupService {
         int offset = searchInFoDTO.getPageNum()-1;
         if(offset < 0) throw new IllegalArgumentException("잘못된 Page Number입니다.");
 
+        System.out.println(offset);
         Map<String,Object> params = new HashMap<>();
         params.put("keyword",searchInFoDTO.getKeyword());
+        params.put("page",offset+100);
         params.put("offset",offset*100);
-
+        System.out.println(searchInFoDTO.getKeyword());
+        System.out.println((offset+100) + " " + offset*100);
         List<GroupInfoDTO> groupList =  groupRepository.getGroupList(params);
+
+        System.out.println("groupSize: " + groupList.size());
 
         return groupList;
     }

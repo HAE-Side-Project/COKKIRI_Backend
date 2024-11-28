@@ -1,6 +1,5 @@
 package com.coggiri.main.jwtUtils;
 
-import com.coggiri.main.customEnums.Role;
 import com.coggiri.main.mvc.domain.entity.JwtToken;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.UserRepository;

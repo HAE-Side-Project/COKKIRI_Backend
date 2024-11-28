@@ -1,9 +1,8 @@
-package com.coggiri.main.mvc.controller;
+package com.coggiri.main.mvc.apiController;
 
 import com.coggiri.main.customEnums.EmailErrorStatus;
 import com.coggiri.main.mvc.domain.dto.MailDTO;
 import com.coggiri.main.mvc.domain.dto.VerificationInfo;
-import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.service.MailService;
 import com.coggiri.main.mvc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
