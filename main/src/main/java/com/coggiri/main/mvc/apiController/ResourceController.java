@@ -1,24 +1,48 @@
 package com.coggiri.main.mvc.apiController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.ibatis.javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
-@Controller
+@Tag(name = "리소스 기능",description = "리소스 관련 API")
+@RestController
+@RequestMapping("/api/app")
 public class ResourceController {
-    @ResponseBody
-    @GetMapping("/app/uploads/${fileName}")
-    public ResponseEntity<Map<String,Object>> getImage(@PathVariable("fileName") String fileName){
+
+    @Value("${file.upload.directory}")
+    private String uploadDirectory;
+
+//    @ResponseBody
+    @GetMapping(value = "uploads/{fileName}")
+    public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName){
+
         try{
-            String filePath =
+            String filePath = uploadDirectory + "/" + fileName;
+            FileSystemResource resource = new FileSystemResource(filePath);
+
+            System.out.println(filePath);
+            if(!resource.exists()){
+                throw new RuntimeException("요청하신 이미지가 존재하지 않습니다.");
+            }
+            Path result = Paths.get(filePath);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(Files.probeContentType(result)))
+                    .body(resource);
         }catch (Exception e){
-            throw new RuntimeException("요청하신 이미지가 존재하지 않습니다.\n" + e.getMessage());
+            throw new RuntimeException("요청하신 이미지가 존재하지 않습니다.");
         }
     }
 }
