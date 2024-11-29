@@ -28,16 +28,15 @@ public class ResourceController {
     private String uploadDirectory;
 
 //    @ResponseBody
-    @GetMapping(value = "uploads/{fileName}")
+    @GetMapping(value = "/uploads/{fileName}")
     public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName){
 
         try{
             String filePath = uploadDirectory + "/" + fileName;
             FileSystemResource resource = new FileSystemResource(filePath);
-            String userDirectoryPath = System.getProperty("user.dir");
 
             log.info("filePath: " + filePath);
-            log.info("curPath: " + userDirectoryPath);
+
             if(!resource.exists()){
                 log.info("file doesn't exist");
                 throw new RuntimeException("요청하신 이미지가 존재하지 않습니다.");
