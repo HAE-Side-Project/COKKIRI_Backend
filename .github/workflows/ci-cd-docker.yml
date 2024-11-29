@@ -19,6 +19,9 @@ jobs:
         java-version: '21'
         distribution: 'corretto'
         
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+  
     - name: build with gradle
       working-directory: ./main
       run: ./gradlew clean build
