@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "그룹 기능",description = "그룹 관련 Get Method")
-@Controller
-@RequestMapping("/group")
-public class GroupController {
-
-    @Autowired
-    private GroupService groupService;
-
-}
+//@Tag(name = "그룹 기능",description = "그룹 관련 Get Method")
+//@Controller
+//@RequestMapping("/group")
+//public class GroupController {
+//
+//    @Autowired
+//    private GroupService groupService;
+//
+//}
