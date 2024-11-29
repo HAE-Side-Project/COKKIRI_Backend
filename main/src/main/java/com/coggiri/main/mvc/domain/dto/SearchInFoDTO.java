@@ -7,7 +7,7 @@ public class SearchInFoDTO {
     private String keyword;
     private int pageNum;
 
-    SearchInFoDTO(String keyword,int pageNum){
+    public SearchInFoDTO(String keyword, int pageNum){
         this.keyword = keyword;
         this.pageNum = pageNum;
     }

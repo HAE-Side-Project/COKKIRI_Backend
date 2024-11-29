@@ -1,6 +1,5 @@
 package com.coggiri.main.mvc.domain.dto;
 
-import com.coggiri.main.mvc.domain.entity.User;
 import lombok.Getter;
 
 @Getter
