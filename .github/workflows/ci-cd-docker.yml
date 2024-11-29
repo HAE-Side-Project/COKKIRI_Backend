@@ -20,6 +20,7 @@ jobs:
         distribution: 'corretto'
         
     - name: build with gradle
+      working-directory: ./main
       run: ./gradlew clean build
 
     - name: SSH Deploy to GCP
