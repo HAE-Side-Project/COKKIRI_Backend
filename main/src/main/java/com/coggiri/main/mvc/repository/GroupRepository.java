@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "그룹 기능",description = "그룹 관련 Get Method")
-@Controller
-@RequestMapping("/group")
+@Repository
 public interface GroupRepository {
     int createGroup(Group group);
     List<GroupInfoDTO> getGroupList(Map<String,Object> params);

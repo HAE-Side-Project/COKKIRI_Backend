@@ -66,4 +66,40 @@ public class GroupApiController {
 
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "그룹 리스트 정보 리스트", description = "그룹 정보 리스트 반환 API",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "그룹 리스트 반환 API",
+                            content = @Content(
+                                    schemaProperties = {
+                                            @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
+                                            @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환")),
+                                            @SchemaProperty(name = "groupList",schema = @Schema(implementation = GroupInfoDTO.class,description = "그룹 정보 리스트"))
+                                    }
+                            )
+                    )
+            }
+    )
+    @ResponseBody
+    @GetMapping("/getGroupList")
+    public ResponseEntity<Map<String,Object>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1")  int pageNum){
+        Map<String,Object> response = new HashMap<>();
+
+        SearchInFoDTO searchInFoDTO = new SearchInFoDTO(keyword,pageNum);
+
+        try {
+            List<GroupInfoDTO> groupInfoList = groupService.getGroupList(searchInFoDTO);
+            response.put("success",true);
+            response.put("message","그룹 리스트 반환 성공");
+            response.put("groupList",groupInfoList);
+        }catch (Exception e){
+            response.put("success",false);
+            response.put("message",e.getMessage());
+            response.put("groupList",null);
+        }
+
+        return ResponseEntity.ok(response);
+    }
 }
