@@ -2,6 +2,8 @@ package com.coggiri.main.mvc.apiController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.ibatis.javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/app")
 public class ResourceController {
+    private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     @Value("${file.upload.directory}")
     private String uploadDirectory;
@@ -31,9 +34,12 @@ public class ResourceController {
         try{
             String filePath = uploadDirectory + "/" + fileName;
             FileSystemResource resource = new FileSystemResource(filePath);
+            String userDirectoryPath = System.getProperty("user.dir");
 
-            System.out.println(filePath);
+            log.info("filePath: " + filePath);
+            log.info("curPath: " + userDirectoryPath);
             if(!resource.exists()){
+                log.info("file doesn't exist");
                 throw new RuntimeException("요청하신 이미지가 존재하지 않습니다.");
             }
             Path result = Paths.get(filePath);
