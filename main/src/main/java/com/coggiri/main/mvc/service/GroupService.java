@@ -8,6 +8,8 @@ import com.coggiri.main.mvc.domain.entity.Group;
 import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.GroupRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,10 @@ import java.util.UUID;
 
 @Service
 public class GroupService {
+    private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private final GroupRepository groupRepository;
     private final UserService userService;
+
     @Value("${file.upload.directory}")
     private String uploadDirectory;
 
@@ -57,29 +61,29 @@ public class GroupService {
         User user = userService.findUserById(userId).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
-        String filePath = "";
+        String fileName = "";
         if(!image.isEmpty()){
             String fileExtension = getFileExtension(image.getOriginalFilename());
 
             if(!isValidImageExtension(fileExtension)) return false;
 
-
+            String filePath = uploadDirectory + "/";
             while(true) {
                 UUID uuid = UUID.randomUUID();
-                String fileName = uuid.toString() + "." + fileExtension;
-                filePath = uploadDirectory + "/" + fileName;
+                fileName = uuid.toString() + "." + fileExtension;
+                filePath += fileName;
                 File newFile = new File(filePath);
                 if(!newFile.exists()) break;
             }
 
             try {
-                saveFile(image, filePath);
+                saveFile(image, fileName);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                log.info("createGroup Error: " + e.getMessage());
             }
         }
 
-        Group groupInfo = new Group(groupRegisterDTO,filePath);
+        Group groupInfo = new Group(groupRegisterDTO,fileName);
         groupRepository.createGroup(groupInfo);
         if(userService.addUserRole(new UserGroupRole(user.getId(),groupInfo.getGroupId(), Role.ADMIN.name())) == 0){
             return false;

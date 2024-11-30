@@ -56,6 +56,7 @@ public class WebSecurityConfig {
                                         "/v3/api-docs/**",
                                         "/webjars/**"
                                 ).hasAnyAuthority("ROLE_SUPER_ADMIN_GROUP_0")
+                                .requestMatchers("/api/resource/**").permitAll()
                                 .requestMatchers("/api/group/**").permitAll()
                                 .requestMatchers("/api/user/**").permitAll()
                                 .requestMatchers("/api/validate/**").permitAll()
