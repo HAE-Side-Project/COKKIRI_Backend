@@ -20,16 +20,15 @@ import java.util.Map;
 
 @Tag(name = "리소스 기능",description = "리소스 관련 API")
 @RestController
-@RequestMapping("/api/app")
+@RequestMapping("/api/resource")
 public class ResourceController {
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
-
+    
     @Value("${file.upload.directory}")
     private String uploadDirectory;
 
-//    @ResponseBody
-    @GetMapping(value = "/uploads/{fileName}")
-    public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName){
+    @GetMapping(value = "/getImage")
+    public ResponseEntity<Resource> getImage(@RequestParam(name = "filename", required = false) String fileName){
 
         try{
             String filePath = uploadDirectory + "/" + fileName;
