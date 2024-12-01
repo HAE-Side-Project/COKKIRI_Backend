@@ -5,6 +5,7 @@ import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
 import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
 import com.coggiri.main.mvc.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,26 +28,27 @@ import java.util.Map;
 @RequestMapping("/api/group")
 public class GroupApiController {
 
+    @Autowired
     private GroupService groupService;
 
-    @Autowired
-    GroupApiController(GroupService groupService){
-        this.groupService = groupService;
-    }
-
     @Operation(summary = "그룹생성", description = "그룹 생성 기능 API",
-        responses = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "그룹생성 API",
-                    content = @Content(
-                            schemaProperties = {
-                                    @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                                    @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환"))
-                            }
-                    )
-            )
-        }
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "그룹생성 API",
+                        content = @Content(
+                                schemaProperties = {
+                                        @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
+                                        @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환"))
+                                }
+                        )
+                )
+            },
+            parameters = {
+                    @Parameter(name = "userId",description = "아이디",example = "asdf12344"),
+                    @Parameter(name = "groupInfo",description = "그룹정보",schema = @Schema(implementation = GroupRegisterDTO.class)),
+                    @Parameter(name = "image",description = "이미지파일",schema = @Schema(implementation = MultipartFile.class))
+            }
     )
     @RequestBody(content = @Content(
             encoding = @Encoding(name = "groupInfo",contentType = MediaType.APPLICATION_JSON_VALUE)))
@@ -80,6 +82,10 @@ public class GroupApiController {
                                     }
                             )
                     )
+            },
+            parameters = {
+                    @Parameter(name = "keyword",description = "검색어",example = "Study"),
+                    @Parameter(name = "pageNum",description = "페이지 개수", example = "1")
             }
     )
     @ResponseBody

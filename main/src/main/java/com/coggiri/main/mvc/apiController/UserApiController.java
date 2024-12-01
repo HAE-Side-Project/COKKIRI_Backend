@@ -6,6 +6,7 @@ import com.coggiri.main.mvc.domain.entity.JwtToken;
 import com.coggiri.main.mvc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -44,9 +46,12 @@ public class UserApiController {
                                         @SchemaProperty(name = "userId", schema = @Schema(type = "string",description = "유저 아이디"))
                                 }
                         )
-                )
-
-    })
+                )},
+            parameters = {
+                    @Parameter(name = "userId", description = "아이디", example = "abc1234"),
+                    @Parameter(name = "password",description = "비밀번호",example = "1234")
+            }
+    )
     @PostMapping("login")
     public ResponseEntity<Map<String,Object>> login(@Parameter(description = "사용자 정보") @RequestBody UserLoginDTO userLoginDTO){
         Map<String, Object> response = new HashMap<>();
@@ -76,9 +81,15 @@ public class UserApiController {
                                         @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "오류 or 성공 메세지"))
                                 }
                         )
-                )
+                )},
+            parameters = {
+                    @Parameter(name = "userId",description = "아이디",example = "abcd1234"),
+                    @Parameter(name = "password",description = "비밀번호",example = "1234"),
+                    @Parameter(name = "userName",description = "이름",example = "홍길동"),
+                    @Parameter(name = "email",description = "이메일",example = "example@naver.com")
             }
     )
+
     @PostMapping("register")
     public ResponseEntity<Map<String, Object>> register(@Parameter(description = "사용자 정보") @RequestBody UserDTO userInfo) {
         Map<String, Object> response = new HashMap<>();
@@ -109,7 +120,12 @@ public class UserApiController {
                                 }
                         )
                 )
-            })
+            },
+            parameters = {
+                    @Parameter(name = "userId",description = "아이디",example = "abcd1234"),
+                    @Parameter(name = "password",description = "변경할 비밀번호",example = "1234")
+            }
+    )
     @ResponseBody
     @PostMapping("changePassword")
     public ResponseEntity<Map<String, Object>> changePassword(@Parameter(description = "사용자 정보", example = "userId") @RequestBody UserLoginDTO userLoginDTO){

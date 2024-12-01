@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-@Tag(name = "태스크 관련 기능",description = "Task 관련 API")
+@Tag(name = "태스크 관련 기능",description = "Task 관련 API (아직 구현안됌 테스트 XXXX")
 @RestController
 @RequestMapping("/api/task")
 public class TaskApiController {
