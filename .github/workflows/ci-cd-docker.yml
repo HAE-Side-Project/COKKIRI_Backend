@@ -30,7 +30,8 @@ jobs:
     - name: upload File
       with:
         key: ${{ secrets.SSH_KEY }}
-        run: scp -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
+        script: | 
+          scp -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
     
     - name: SSH Deploy to GCP
       uses: appleboy/ssh-action@master
