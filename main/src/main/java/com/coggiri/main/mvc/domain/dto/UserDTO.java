@@ -13,6 +13,7 @@ import java.util.List;
 @Schema
 @Getter
 public class UserDTO {
+    @Schema(example = "1", description = "pk")
     private int id;
     @Schema(example = "asd1234", description = "아이디")
     private String userId;
