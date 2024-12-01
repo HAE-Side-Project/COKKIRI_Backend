@@ -36,7 +36,9 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         source: "./main/build/libs/*jar"
         target: "~/docker_compose/web"
-
+        strip_components: 3 
+        chmod: "+x"
+        
     - name: SSH Deploy to GCP
       uses: appleboy/ssh-action@master
       with:
