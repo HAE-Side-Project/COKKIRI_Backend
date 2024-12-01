@@ -37,7 +37,7 @@ jobs:
         script: |
           cd ~/docker_compose
           sudo docker compose down
-
+          rm ./web/main-0.0.1-SNAPSHOT.jar
           scp $${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
           echo 'y' | sudo docker system prune -a
           sudo docker compose up -d
