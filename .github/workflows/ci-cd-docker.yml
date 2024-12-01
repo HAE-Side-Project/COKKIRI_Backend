@@ -11,10 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'corretto'
@@ -23,24 +23,26 @@ jobs:
       working-directory: ./main
       run: chmod +x gradlew
   
-    - name: Build with Gradle and Deploy
-      uses: appleboy/ssh-action@master
+    - name: build with gradle
+      working-directory: ./main
+      run: ./gradlew clean build
+
+    - name: upload Build File
+      uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
-        script: |
-          cd ./main 
-          ./gradlew clean build
-          scp build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
-    
+        key: ${{ secrets.SSH_KEY }}
+        source: "build/libs/*jar"
+        target: "docker_compose/web"
+
     - name: SSH Deploy to GCP
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        port: 3080
+        port: ${{ secrets.PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd ~/docker_compose 
