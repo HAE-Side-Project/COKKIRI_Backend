@@ -23,16 +23,17 @@ jobs:
       working-directory: ./main
       run: chmod +x gradlew
   
-    - name: build with gradle
-      working-directory: ./main
-      run: ./gradlew clean build
-      
-    - name: upload File
+    - name: Build with Gradle and Deploy
       uses: appleboy/ssh-action@master
       with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
-        script: | 
-          scp -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
+        port: ${{ secrets.PORT }}
+        script: |
+          cd ./main 
+          ./gradlew clean build
+          scp build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
     
     - name: SSH Deploy to GCP
       uses: appleboy/ssh-action@master
