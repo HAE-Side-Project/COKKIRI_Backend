@@ -4,17 +4,23 @@ import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Schema
 @Getter
 public class UserDTO {
     private int id;
+    @Schema(example = "asd1234", description = "아이디")
     private String userId;
+    @Schema(example = "1234", description = "비밀번호")
     private String password;
+    @Schema(example = "user", description = "사용자 이름")
     private String userName;
+    @Schema(example = "sample@naver.com", description = "이메일")
     private String email;
     private List<UserGroupRole> roles = new ArrayList<>();
 
