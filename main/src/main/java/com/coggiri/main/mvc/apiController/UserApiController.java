@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,9 +70,27 @@ public class UserApiController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "회원가입",description = "회원가입 기능 API", tags = {"user"})
-    @ApiResponses(value = { @ApiResponse(description = "success",content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class)))})
-    @PostMapping(value = "register", consumes = {"application/json"})
+    @Operation(summary = "회원가입",description = "회원가입 기능 API",
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "회원가입 성공 여부 반환",
+                        content = @Content(
+                                schemaProperties = {
+                                        @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
+                                        @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "오류 or 성공 메세지"))
+                                }
+                        )
+                )},
+            parameters = {
+                    @Parameter(name = "userId",description = "아이디",example = "abcd1234"),
+                    @Parameter(name = "password",description = "비밀번호",example = "1234"),
+                    @Parameter(name = "userName",description = "이름",example = "홍길동"),
+                    @Parameter(name = "email",description = "이메일",example = "example@naver.com")
+            }
+    )
+
+    @PostMapping("register")
     public ResponseEntity<Map<String, Object>> register(@Parameter(description = "사용자 정보") @RequestBody UserDTO userInfo) {
         Map<String, Object> response = new HashMap<>();
 
