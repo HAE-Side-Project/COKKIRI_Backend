@@ -108,22 +108,21 @@ public class UserApiController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API",
-            responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "비밀번호 변경",
-                        content = @Content(
-                                schemaProperties = {
-                                        @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                                        @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지"))
-                                }
-                        )
-                )
-            },
-            parameters = {
-                    @Parameter(name = "userId",description = "아이디",example = "abcd1234"),
-                    @Parameter(name = "password",description = "변경할 비밀번호",example = "1234")
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API")
+    @ApiResponse(
+            responseCode = "200",
+            description = "비밀번호 변경",
+            content = @Content(
+                    schemaProperties = {
+                            @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
+                            @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지"))
+                    }
+            )
+    )
+    @Parameters(
+            value = {
+                    @Parameter(name = "userId", description = "아이디", example = "abcd1234"),
+                    @Parameter(name = "password", description = "변경할 비밀번호", example = "1234")
             }
     )
     @ResponseBody
