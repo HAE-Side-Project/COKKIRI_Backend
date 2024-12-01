@@ -28,9 +28,7 @@ jobs:
       run: ./gradlew clean build
       
     - name: upload File
-      with:
-        script: |
-           scp -i ${{ secrets.SSH_KEY }} -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
+      run: scp -i ${{ secrets.SSH_KEY }} -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
     
     - name: SSH Deploy to GCP
       uses: appleboy/ssh-action@master
