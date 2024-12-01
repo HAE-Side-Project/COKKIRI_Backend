@@ -3,7 +3,7 @@ package com.coggiri.main.mvc.domain.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-@Schema(name = "groupInfo",description = "그룹 정보")
+@Schema
 @Getter
 public class GroupRegisterDTO {
     @Schema(description = "그룹 종류",defaultValue = "0",allowableValues = {"0","1"},example = "0")

@@ -46,7 +46,7 @@ public class GroupApiController {
             },
             parameters = {
                     @Parameter(name = "userId",description = "아이디",example = "asdf12344"),
-                    @Parameter(name = "groupInfo",description = "그룹정보",schema = @Schema(implementation = GroupRegisterDTO.class)),
+                    @Parameter(name = "groupInfo",description = "그룹 정보",schema = @Schema(implementation = GroupRegisterDTO.class)),
                     @Parameter(name = "image",description = "이미지파일",schema = @Schema(implementation = MultipartFile.class))
             }
     )
