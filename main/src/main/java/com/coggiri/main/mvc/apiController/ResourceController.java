@@ -1,5 +1,11 @@
 package com.coggiri.main.mvc.apiController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -27,6 +33,21 @@ public class ResourceController {
     @Value("${file.upload.directory}")
     private String uploadDirectory;
 
+    @Operation(summary = "이미지 접근",description = "이미지 반환",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "이미지 성공적으로 반환",
+                            content = @Content(
+                                    mediaType = "image/*",
+                                    schema = @Schema(type = "string", format = "binary")
+                            )
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "filename",description = "파일명",example = "예시파일.jpg")
+            }
+    )
     @GetMapping(value = "/getImage")
     public ResponseEntity<Resource> getImage(@RequestParam(name = "filename", required = false) String fileName){
 

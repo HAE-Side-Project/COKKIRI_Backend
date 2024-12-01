@@ -46,7 +46,12 @@ public class ValidationController {
                                 }
                         )
                 )
-            })
+            },
+            parameters = {
+                    @Parameter(name = "email",description = "이메일",example = "sample@naver.com"),
+                    @Parameter(name = "authCode",description = "인증번호",example = "124asd234")
+            }
+    )
     @ResponseBody
     @PostMapping("/sendEmail")
     public ResponseEntity<Map<String,Object>> sendVerificationEmail(@Parameter(description = "이메일 정보", example = "1234@naver.com")
@@ -80,7 +85,12 @@ public class ValidationController {
                                 }
                         )
                 )
-            })
+            },
+            parameters = {
+                    @Parameter(name = "email",description = "이메일",example = "sample@naver.com"),
+                    @Parameter(name = "authCode",description = "인증번호",example = "124asd234")
+            }
+    )
     @ResponseBody
     @PostMapping("/verifyEmail")
     public ResponseEntity<Map<String,Object>> validateCode(@Parameter(description = "이메일 정보", example = "1234@naver.com") @RequestBody MailDTO mailDTO){
@@ -126,7 +136,8 @@ public class ValidationController {
                                 }
                         )
                 )
-            })
+            }
+    )
     @PostMapping("/Id")
     public ResponseEntity<Map<String,Object>> validateId(@Parameter(name = "userId", description = "유저아이디", example = "user") @RequestParam String userId){
         Map<String, Object> response = new HashMap<>();
