@@ -91,7 +91,15 @@ public class UserApiController {
     )
 
     @PostMapping("register")
-    public ResponseEntity<Map<String, Object>> register(@Parameter(description = "사용자 정보") @RequestBody UserDTO userInfo) {
+    public ResponseEntity<Map<String, Object>> register(@Parameter(description = "사용자 정보",
+                                                        content = @Content(
+                                                                schemaProperties = {
+                                                                        @SchemaProperty(name = "userId",schema = @Schema(type = "string",description = "아이디",example = "sadf1234")),
+                                                                        @SchemaProperty(name = "password",schema = @Schema(type = "string",description = "비밀번호",example = "1234")),
+                                                                        @SchemaProperty(name = "userName",schema = @Schema(type = "userName",description = "사용자 이름",example = "user")),
+                                                                        @SchemaProperty(name = "email",schema = @Schema(type = "email",description = "이메일",example = "sample@naver.com"))
+                                                                }
+                                                        )) @RequestBody UserDTO userInfo) {
         Map<String, Object> response = new HashMap<>();
 
         log.debug("register called");
