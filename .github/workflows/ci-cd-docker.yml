@@ -26,7 +26,13 @@ jobs:
     - name: build with gradle
       working-directory: ./main
       run: ./gradlew clean build
-
+      
+    - name: upload File
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+           scp -i ${{ secrets.SSH_KEY }} -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
+    
     - name: SSH Deploy to GCP
       uses: appleboy/ssh-action@master
       with:
@@ -37,7 +43,6 @@ jobs:
         script: |
           cd ~/docker_compose 
           sudo docker compose down
-          scp -i ${{ secrets.SSH_KEY }} -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
           echo 'y' | sudo docker system prune -a
           sudo docker compose up -d
           
