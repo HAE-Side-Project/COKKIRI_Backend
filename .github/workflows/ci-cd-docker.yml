@@ -28,7 +28,6 @@ jobs:
       run: ./gradlew clean build
       
     - name: upload File
-      uses: appleboy/ssh-action@master
       with:
         script: |
            scp -i ${{ secrets.SSH_KEY }} -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
