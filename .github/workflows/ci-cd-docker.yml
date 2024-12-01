@@ -35,9 +35,9 @@ jobs:
         port: 3080
         key: ${{ secrets.SSH_KEY }}
         script: |
-          cd ~/docker_compose
-          sudo docker compose down
-          scp -i ${{ secrets.SSH_KEY }} -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/
-          echo 'y' | sudo docker system prune -a
+          cd ~/docker_compose && \
+          sudo docker compose down && \
+          scp -i ${{ secrets.SSH_KEY }} -P ${{ secrets.PORT }} ${{ github.workspace }}/build/libs/*.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/docker_compose/web/ && \
+          echo 'y' | sudo docker system prune -a && \
           sudo docker compose up -d
           
