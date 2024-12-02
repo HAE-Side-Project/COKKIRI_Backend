@@ -13,5 +13,6 @@ import java.util.Map;
 @Repository
 public interface GroupRepository {
     int createGroup(Group group);
+    int deleteGroup(int groupId);
     List<GroupInfoDTO> getGroupList(Map<String,Object> params);
 }

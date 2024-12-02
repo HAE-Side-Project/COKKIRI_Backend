@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -103,6 +105,11 @@ public class GroupService {
             return false;
         }
 
+        return true;
+    }
+
+    public boolean deleteGroup(int groupId){
+        if(groupRepository.deleteGroup(groupId) == 0) return false;
         return true;
     }
 

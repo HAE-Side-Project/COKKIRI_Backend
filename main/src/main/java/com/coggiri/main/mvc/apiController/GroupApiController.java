@@ -1,5 +1,7 @@
 package com.coggiri.main.mvc.apiController;
 
+import com.coggiri.main.customEnums.Role;
+import com.coggiri.main.jwtUtils.RequireGroupRole;
 import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
 import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,7 +92,7 @@ public class GroupApiController {
             }
     )
     @ResponseBody
-    @GetMapping("/getGroupList")
+    @GetMapping(value = "/getGroupList")
     public ResponseEntity<Map<String,Object>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1")  int pageNum){
         Map<String,Object> response = new HashMap<>();
 
