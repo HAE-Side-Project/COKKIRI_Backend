@@ -29,4 +29,9 @@
         Order By group_id ASC
         LIMIT #{page} OFFSET #{offset}
     </select>
+
+    <delete id="deleteGroup" parameterType="Integer">
+        delete from groups
+        where group_id = #{groupId};
+    </delete>
 </mapper>
