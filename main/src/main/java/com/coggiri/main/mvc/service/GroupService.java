@@ -17,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Service
 public class GroupService {
@@ -43,16 +43,30 @@ public class GroupService {
         int offset = searchInFoDTO.getPageNum()-1;
         if(offset < 0) throw new IllegalArgumentException("잘못된 Page Number입니다.");
 
-        System.out.println(offset);
         Map<String,Object> params = new HashMap<>();
         params.put("keyword",searchInFoDTO.getKeyword());
         params.put("page",offset+100);
         params.put("offset",offset*100);
-        System.out.println(searchInFoDTO.getKeyword());
-        System.out.println((offset+100) + " " + offset*100);
         List<GroupInfoDTO> groupList =  groupRepository.getGroupList(params);
 
-        System.out.println("groupSize: " + groupList.size());
+        for(GroupInfoDTO group : groupList){
+            if(!group.getThumbnailPath().isEmpty()){
+                try {
+                    String filePath = uploadDirectory + "/" +group.getThumbnailPath();
+                    Path path = Paths.get(filePath);
+
+                    if (Files.exists(path)) {
+                        byte[] fileContent = Files.readAllBytes(path);
+                        String mimeType = Files.probeContentType(path);
+                        String base64Image = Base64.getEncoder().encodeToString(fileContent);
+
+                        group.setThumbnailBase64("data:"+mimeType+";base64,"+base64Image);
+                    }
+                }catch (Exception e){
+                    log.info("Thumbnail File Create Failed" + e.getMessage());
+                }
+            }
+        }
 
         return groupList;
     }
@@ -77,7 +91,7 @@ public class GroupService {
             }
 
             try {
-                saveFile(image, fileName);
+                saveFile(image, filePath);
             } catch (Exception e) {
                 log.info("createGroup Error: " + e.getMessage());
             }

@@ -2,6 +2,7 @@ package com.coggiri.main.mvc.domain.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.Setter;
 
 @Schema
 @Getter
@@ -16,6 +17,9 @@ public class GroupInfoDTO {
     private int groupNumber;
     @Schema(example = "asd.jpg",description = "이미지 파일 이름")
     private String thumbnailPath;
+    @Setter
+    @Schema(example = "",description = "이미지 파일 데이터")
+    private String thumbnailBase64;
 
     GroupInfoDTO(int groupId, int groupCategory, String groupName, int groupNumber,String thumbnailPath){
         this.groupId = groupId;
