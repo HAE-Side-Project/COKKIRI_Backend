@@ -72,6 +72,15 @@ public class GroupApiController {
         return ResponseEntity.ok(response);
     }
 
+    @ResponseBody
+    @PostMapping(value = "/deleteGroup",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String,Object>> deleteGroup(@RequestBody Map<String, String> payload){
+        Map<String,Object> response = new HashMap<>();
+        String groupId = payload.get("groupId");
+        System.out.println(groupId);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "그룹 리스트 정보 리스트", description = "그룹 정보 리스트 반환 API",
             responses = {
                     @ApiResponse(

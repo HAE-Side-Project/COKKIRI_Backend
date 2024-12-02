@@ -138,9 +138,10 @@ public class ValidationController {
             }
     )
     @PostMapping("/Id")
-    public ResponseEntity<Map<String,Object>> validateId(@Parameter(name = "userId", description = "유저아이디", example = "user") @RequestParam String userId){
+    public ResponseEntity<Map<String,Object>> validateId(@RequestBody Map<String,Object> map){
         Map<String, Object> response = new HashMap<>();
-        if(userService.findUserById(userId).isPresent()){
+        String userId = map.get("userId").toString();
+        if(userService.findUserById(userId).isEmpty()){
             response.put("success",true);
             response.put("userId",userId);
         }else{
