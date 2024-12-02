@@ -47,12 +47,6 @@ public class JwtTokenProvider {
         Date accessTokenExpiresln = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
 
-//        String accessToken = Jwts.builder()
-//                .setSubject(authentication.getName())
-//                .claim("auth",authorities)
-//                .setExpiration(accessTokenExpiresln)
-//                .signWith(key, SignatureAlgorithm.HS256)
-//                .compact();
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("userId",userInfo.getId())
