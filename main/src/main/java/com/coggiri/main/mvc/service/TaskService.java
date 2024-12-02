@@ -11,6 +11,8 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     public void createTask(TaskRegisterDTO taskRegisterDTO){
-
+        // task 등록
+        // tag 등록
+        // user,group task 등록
     }
 }
