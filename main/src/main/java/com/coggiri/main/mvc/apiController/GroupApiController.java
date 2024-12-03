@@ -1,7 +1,5 @@
 package com.coggiri.main.mvc.apiController;
 
-import com.coggiri.main.customEnums.Role;
-import com.coggiri.main.jwtUtils.RequireGroupRole;
 import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
 import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
@@ -72,15 +70,6 @@ public class GroupApiController {
         return ResponseEntity.ok(response);
     }
 
-    @ResponseBody
-    @PostMapping(value = "/deleteGroup",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String,Object>> deleteGroup(@RequestBody Map<String, String> payload){
-        Map<String,Object> response = new HashMap<>();
-        String groupId = payload.get("groupId");
-        System.out.println(groupId);
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "그룹 리스트 정보 리스트", description = "그룹 정보 리스트 반환 API",
             responses = {
                     @ApiResponse(
@@ -104,7 +93,6 @@ public class GroupApiController {
     @GetMapping(value = "/getGroupList")
     public ResponseEntity<Map<String,Object>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1")  int pageNum){
         Map<String,Object> response = new HashMap<>();
-
         SearchInFoDTO searchInFoDTO = new SearchInFoDTO(keyword,pageNum);
 
         try {
@@ -118,6 +106,22 @@ public class GroupApiController {
             response.put("groupList",null);
         }
 
+        return ResponseEntity.ok(response);
+    }
+
+    @ResponseBody
+    @PostMapping("/deleteGroup")
+    public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map){
+        Map<String, Object> response = new HashMap<>();
+        String groupId = map.get("groupId").toString();
+
+        if(groupService.deleteGroup(Integer.parseInt(groupId))){
+            response.put("success",true);
+            response.put("message","그룹 삭제 완료");
+        }else{
+            response.put("success",false);
+            response.put("message","그룹 삭제 실패");
+        }
         return ResponseEntity.ok(response);
     }
 
