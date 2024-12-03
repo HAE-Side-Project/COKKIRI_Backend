@@ -83,11 +83,11 @@ public class GroupService {
 
             if(!isValidImageExtension(fileExtension)) return false;
 
-            String filePath = uploadDirectory + "/";
+            String filePath = "";
             while(true) {
                 UUID uuid = UUID.randomUUID();
                 fileName = uuid.toString() + "." + fileExtension;
-                filePath += fileName;
+                filePath = uploadDirectory + "/" + fileName;
                 File newFile = new File(filePath);
                 if(!newFile.exists()) break;
             }
@@ -109,7 +109,17 @@ public class GroupService {
     }
 
     public boolean deleteGroup(int groupId){
-        if(groupRepository.deleteGroup(groupId) == 0) return false;
+        GroupInfoDTO groupInfoDTO = groupRepository.getGroup(groupId);
+
+        if(!groupInfoDTO.getThumbnailPath().isEmpty()){
+            String filePath = uploadDirectory + "/" + groupInfoDTO.getThumbnailPath();
+
+            File file = new File(filePath);
+            if(!file.exists()) throw new RuntimeException("존재하지 않는 썸네일 파일입니다.");
+            if(!file.delete()) throw new RuntimeException("썸네일 파일 삭제 실패");
+        }
+
+        if(groupRepository.deleteGroup(groupId) == 0) throw new RuntimeException("데이터베이스 삭제 실패");
         return true;
     }
 

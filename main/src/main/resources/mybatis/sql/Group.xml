@@ -30,6 +30,17 @@
         LIMIT #{page} OFFSET #{offset}
     </select>
 
+    <select id="getGroup" parameterType="Integer" resultType="com.coggiri.main.mvc.domain.dto.GroupInfoDTO">
+        select
+            group_id as groupId,
+            group_category as groupCategory,
+            group_name as groupName,
+            group_number as groupNumber,
+            thumbnail_path as thumbnailPath
+        FROM groups
+        WHERE group_id = #{groupId}
+    </select>
+
     <delete id="deleteGroup" parameterType="Integer">
         delete from groups
         where group_id = #{groupId};
