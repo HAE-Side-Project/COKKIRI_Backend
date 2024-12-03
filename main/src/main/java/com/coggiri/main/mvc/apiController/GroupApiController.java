@@ -58,7 +58,7 @@ public class GroupApiController {
 //    @RequestBody(content = @Content(
 //            encoding = @Encoding(name = "groupInfo",contentType = MediaType.APPLICATION_JSON_VALUE)))
     @PostMapping(value = "/createGroup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String,Object>> createGroup( @RequestPart(value = "userId",required = true) String userId,
+    public ResponseEntity<Map<String,Object>> createGroup( @RequestParam(value = "userId",required = true) String userId,
                                                            @RequestPart(value = "groupInfo",required = true) GroupRegisterDTO groupRegisterDTO,
                                                           @RequestPart(value = "image",required = false) MultipartFile image){
         Map<String,Object> response = new HashMap<>();
