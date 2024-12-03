@@ -136,7 +136,7 @@ public class GroupApiController {
     @Parameters(
             @Parameter(name = "groupId",description = "그룹 pk",example = "1")
     )
-    @RequireGroupRole(Role.ADMIN)
+    @RequireGroupRole(value=Role.ADMIN, groupIdParameter = "groupId")
     @ResponseBody
     @PostMapping("/deleteGroup")
     public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map, Authentication authentication){

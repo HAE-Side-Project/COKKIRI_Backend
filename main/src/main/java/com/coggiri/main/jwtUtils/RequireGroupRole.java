@@ -9,9 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-@Target({ElementType.METHOD,ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@GroupAuthorizationEvaluator.hasGroupRole(authentication, #requestBody['groupId'], T(com.coggiri.main.customEnums.Role).ADMIN")
 public @interface RequireGroupRole {
     Role value();
     String groupIdParameter() default "groupId";
