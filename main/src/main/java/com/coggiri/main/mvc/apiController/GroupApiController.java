@@ -59,6 +59,8 @@ public class GroupApiController {
                                                           @RequestPart(value = "image",required = false) MultipartFile image){
         Map<String,Object> response = new HashMap<>();
 
+        System.out.println(image.toString());
+
         if(groupService.createGroup(userId,groupRegisterDTO,image)){
             response.put("success",true);
             response.put("message","그룹 생성 완료");
