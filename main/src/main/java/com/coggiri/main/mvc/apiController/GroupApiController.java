@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,10 +90,9 @@ public class GroupApiController {
             }
     )
     @ResponseBody
-    @GetMapping("/getGroupList")
+    @GetMapping(value = "/getGroupList")
     public ResponseEntity<Map<String,Object>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1")  int pageNum){
         Map<String,Object> response = new HashMap<>();
-
         SearchInFoDTO searchInFoDTO = new SearchInFoDTO(keyword,pageNum);
 
         try {
@@ -106,6 +106,22 @@ public class GroupApiController {
             response.put("groupList",null);
         }
 
+        return ResponseEntity.ok(response);
+    }
+
+    @ResponseBody
+    @PostMapping("/deleteGroup")
+    public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map){
+        Map<String, Object> response = new HashMap<>();
+        String groupId = map.get("groupId").toString();
+
+        if(groupService.deleteGroup(Integer.parseInt(groupId))){
+            response.put("success",true);
+            response.put("message","그룹 삭제 완료");
+        }else{
+            response.put("success",false);
+            response.put("message","그룹 삭제 실패");
+        }
         return ResponseEntity.ok(response);
     }
 

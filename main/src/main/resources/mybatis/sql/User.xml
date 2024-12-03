@@ -40,4 +40,5 @@
         FROM user_group_role
         WHERE user_id = #{userId}
     </select>
+
 </mapper>
