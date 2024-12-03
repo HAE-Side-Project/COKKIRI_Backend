@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,8 @@ public class GroupApiController {
 
     @Autowired
     private GroupService groupService;
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     @Operation(summary = "그룹생성", description = "그룹 생성 기능 API",
             responses = {
@@ -51,15 +55,15 @@ public class GroupApiController {
                     @Parameter(name = "image",description = "이미지파일",schema = @Schema(implementation = MultipartFile.class))
             }
     )
-    @RequestBody(content = @Content(
-            encoding = @Encoding(name = "groupInfo",contentType = MediaType.APPLICATION_JSON_VALUE)))
+//    @RequestBody(content = @Content(
+//            encoding = @Encoding(name = "groupInfo",contentType = MediaType.APPLICATION_JSON_VALUE)))
     @PostMapping(value = "/createGroup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String,Object>> createGroup( @RequestPart(value = "userId",required = true) String userId,
                                                            @RequestPart(value = "groupInfo",required = true) GroupRegisterDTO groupRegisterDTO,
                                                           @RequestPart(value = "image",required = false) MultipartFile image){
         Map<String,Object> response = new HashMap<>();
 
-        System.out.println(image.toString());
+        log.info(image.toString());
 
         if(groupService.createGroup(userId,groupRegisterDTO,image)){
             response.put("success",true);
