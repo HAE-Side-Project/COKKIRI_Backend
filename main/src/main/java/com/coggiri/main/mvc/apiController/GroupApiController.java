@@ -6,6 +6,7 @@ import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
 import com.coggiri.main.mvc.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -108,18 +109,43 @@ public class GroupApiController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "그룹 삭제",description = "그룹 삭제 API",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schemaProperties = {
+                                            @SchemaProperty(name = "groupId", schema = @Schema(type = "string", description = "그룹 pk"))
+                                    }
+                            )
+                    }
+            ))
+    @ApiResponse(
+            responseCode = "200",
+            description = "그룹 삭제 API",
+            content = @Content(
+                    schemaProperties = {
+                            @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
+                            @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환")),
+                    }
+            )
+    )
+    @Parameters(
+            @Parameter(name = "groupId",description = "그룹 pk",example = "1")
+    )
     @ResponseBody
     @PostMapping("/deleteGroup")
     public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map){
         Map<String, Object> response = new HashMap<>();
         String groupId = map.get("groupId").toString();
-
-        if(groupService.deleteGroup(Integer.parseInt(groupId))){
-            response.put("success",true);
-            response.put("message","그룹 삭제 완료");
-        }else{
+        try{
+            if(groupService.deleteGroup(Integer.parseInt(groupId))){
+                response.put("success",true);
+                response.put("message","그룹 삭제 완료");
+            }
+        }catch (Exception e){
             response.put("success",false);
-            response.put("message","그룹 삭제 실패");
+            response.put("message",e.getMessage());
         }
         return ResponseEntity.ok(response);
     }
