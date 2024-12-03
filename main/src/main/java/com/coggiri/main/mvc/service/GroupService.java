@@ -78,7 +78,7 @@ public class GroupService {
                 new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
         String fileName = "";
-        if(image != null && !image.isEmpty()){
+        if(!image.isEmpty()){
             String fileExtension = getFileExtension(image.getOriginalFilename());
 
             if(!isValidImageExtension(fileExtension)) return false;
