@@ -1,5 +1,7 @@
 package com.coggiri.main.mvc.apiController;
 
+import com.coggiri.main.customEnums.Role;
+import com.coggiri.main.jwtUtils.RequireGroupRole;
 import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
 import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -133,9 +136,10 @@ public class GroupApiController {
     @Parameters(
             @Parameter(name = "groupId",description = "그룹 pk",example = "1")
     )
+    @RequireGroupRole(value=Role.ADMIN, groupIdParameter = "groupId")
     @ResponseBody
     @PostMapping("/deleteGroup")
-    public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map){
+    public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map, Authentication authentication){
         Map<String, Object> response = new HashMap<>();
         String groupId = map.get("groupId").toString();
         try{

@@ -41,4 +41,9 @@
         WHERE user_id = #{userId}
     </select>
 
+    <select id="findGroupRoleByUserId" resultType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
+        SELECT id, user_id as userId, group_id as groupId, role
+        FROM user_group_role
+        WHERE user_id = #{userId} AND group_id = #{groupId}
+    </select>
 </mapper>
