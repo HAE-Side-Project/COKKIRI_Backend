@@ -35,7 +35,7 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    Task(TaskRegisterDTO taskRegisterDTO){
+    public Task(TaskRegisterDTO taskRegisterDTO){
         this.groupOption = taskRegisterDTO.isGroupOption();
         this.achiveCondition = false;
         this.taskName = taskRegisterDTO.getTaskName();
