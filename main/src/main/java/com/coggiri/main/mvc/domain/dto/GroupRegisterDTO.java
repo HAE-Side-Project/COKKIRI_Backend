@@ -16,17 +16,20 @@ public class GroupRegisterDTO {
     private String groupRule;
     @Schema(description = "그룹 조건",example = "그룹 조건")
     private String groupCondition;
+    @Schema(description = "그룹 태그",example = "그룹 태그")
+    private String[] groupTags;
 
     GroupRegisterDTO() {
 
     }
 
     GroupRegisterDTO(int groupCategory,String groupName, String groupIntro,
-                     String groupRule, String groupCondition){
+                     String groupRule, String groupCondition,String[] tags){
         this.groupCategory = groupCategory;
         this.groupName = groupName;
         this.groupIntro = groupIntro;
         this.groupRule = groupRule;
         this.groupCondition = groupCondition;
+        this.groupTags = tags;
     }
 }

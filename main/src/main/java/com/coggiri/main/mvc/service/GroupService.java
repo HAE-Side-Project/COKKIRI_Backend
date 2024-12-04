@@ -8,6 +8,7 @@ import com.coggiri.main.mvc.domain.entity.Group;
 import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.GroupRepository;
+import com.coggiri.main.mvc.repository.TagRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +28,17 @@ import java.util.*;
 @Service
 public class GroupService {
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    private final GroupRepository groupRepository;
-    private final UserService userService;
+    @Autowired
+    private GroupRepository groupRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TagRepository tagRepository;
 
     @Value("${file.upload.directory}")
     private String uploadDirectory;
 
     private static final String[] ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "bmp", "webp"};
-
-    @Autowired
-    GroupService(GroupRepository groupRepository,UserService userService){
-        this.groupRepository = groupRepository;
-        this.userService = userService;
-    }
 
     public List<GroupInfoDTO> getGroupList(SearchInFoDTO searchInFoDTO){
         int offset = searchInFoDTO.getPageNum()-1;
@@ -100,7 +99,10 @@ public class GroupService {
         }
 
         Group groupInfo = new Group(groupRegisterDTO,fileName);
+        // 그룹 정보 저장
         groupRepository.createGroup(groupInfo);
+        // 그룹 태그 저장
+//        tagRepository.addTag
         if(userService.addUserRole(new UserGroupRole(user.getId(),groupInfo.getGroupId(), Role.ADMIN.name())) == 0){
             return false;
         }
