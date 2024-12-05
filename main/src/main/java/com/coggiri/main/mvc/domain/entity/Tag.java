@@ -5,14 +5,14 @@ import lombok.Getter;
 @Getter
 public class Tag {
     private int tagId;
-    private String tagName;
-    private int groupId;
-    private int taskId;
+    private String[] tagNames;
 
-    Tag(int tagId,String tagName,int groupId,int taskId){
+    public Tag(int tagId,String[] tagNames){
         this.tagId = tagId;
-        this.tagName = tagName;
-        this.groupId = groupId;
-        this.taskId = taskId;
+        this.tagNames = tagNames;
+    }
+
+    public Tag(String[] tagNames){
+        this.tagNames = tagNames;
     }
 }

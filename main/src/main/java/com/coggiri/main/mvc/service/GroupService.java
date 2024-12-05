@@ -33,7 +33,7 @@ public class GroupService {
     @Autowired
     private UserService userService;
     @Autowired
-    private TagRepository tagRepository;
+    private TagService tagService;
 
     @Value("${file.upload.directory}")
     private String uploadDirectory;
@@ -102,7 +102,8 @@ public class GroupService {
         // 그룹 정보 저장
         groupRepository.createGroup(groupInfo);
         // 그룹 태그 저장
-//        tagRepository.addTag
+        if(groupRegisterDTO.getGroupTags().length > 0) tagService.createTag(groupRegisterDTO.getGroupTags());
+        // 그룹 유저 롤 저장
         if(userService.addUserRole(new UserGroupRole(user.getId(),groupInfo.getGroupId(), Role.ADMIN.name())) == 0){
             return false;
         }
