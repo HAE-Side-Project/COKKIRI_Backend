@@ -1,5 +1,6 @@
 package com.coggiri.main.mvc.service;
 
+import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.entity.Tag;
 import com.coggiri.main.mvc.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,21 @@ public class TagService {
         tagRepository.createTag(tag);
     }
 
+    public void addGroupTagRole(int groupId,String[] tags){
+        Tag tag = new Tag(tags);
+        ArrayList<Integer> tagIds =  tagRepository.getTagIds(tag);
+        tagRepository.addGroupTagRole(groupId,tagIds);
+    }
+
+    public void deleteGroupTagRole(GroupInfoDTO groupInfoDTO){
+
+        deleteTags(groupInfoDTO.getTags());
+    }
+
+    public String[] getGroupTags(int groupId){
+        return tagRepository.getGroupTags(groupId);
+    }
+
     public ArrayList<Integer> getTagId(String[] tags){
         Tag tag = new Tag(tags);
         return tagRepository.getTagIds(tag);
@@ -26,5 +42,8 @@ public class TagService {
         return tagRepository.getTagNames(tagsId);
     }
 
-//    public void addGroupTag()
+    public void deleteTags(String[] tags){
+        Tag tag = new Tag(tags);
+        tagRepository.deleteTags(tag);
+    }
 }

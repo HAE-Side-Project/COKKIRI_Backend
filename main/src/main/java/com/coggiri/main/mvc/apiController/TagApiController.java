@@ -44,4 +44,14 @@ public class TagApiController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/getGroupTag")
+    public ResponseEntity<Map<String,Object>> getGroupTag(@RequestBody Map<String,Object> map){
+        Map<String,Object> response = new HashMap<>();
+        String groupId = map.get("groupId").toString();
+        String[] tags = tagService.getGroupTags(Integer.parseInt(groupId));
+        response.put("success",true);
+        response.put("tag",tags);
+        return ResponseEntity.ok(response);
+    }
 }

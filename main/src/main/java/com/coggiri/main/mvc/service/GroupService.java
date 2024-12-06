@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,11 +68,22 @@ public class GroupService {
                     log.info("Thumbnail File Create Failed" + e.getMessage());
                 }
             }
+            String[] tags = tagService.getGroupTags(group.getGroupId());
+            if(tags.length > 0) group.setTags(tags);
         }
 
         return groupList;
     }
 
+    public GroupInfoDTO getGroup(int groupId){
+        GroupInfoDTO groupInfoDTO = groupRepository.getGroup(groupId);
+        String[] tags = tagService.getGroupTags(groupId);
+
+        groupInfoDTO.setTags(tags);
+
+        return groupInfoDTO;
+    }
+    @Transactional
     public boolean createGroup(String userId,GroupRegisterDTO groupRegisterDTO, MultipartFile image){
         User user = userService.findUserById(userId).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다"));
@@ -101,18 +113,23 @@ public class GroupService {
         Group groupInfo = new Group(groupRegisterDTO,fileName);
         // 그룹 정보 저장
         groupRepository.createGroup(groupInfo);
-        // 그룹 태그 저장
-        if(groupRegisterDTO.getGroupTags().length > 0) tagService.createTag(groupRegisterDTO.getGroupTags());
+        if(groupRegisterDTO.getGroupTags().length > 0) {
+            // 그룹 태그 저장
+            tagService.createTag(groupRegisterDTO.getGroupTags());
+            // 그룹 태그 관계 저장
+            tagService.addGroupTagRole(groupInfo.getGroupId(),groupRegisterDTO.getGroupTags());
+        }
         // 그룹 유저 롤 저장
-        if(userService.addUserRole(new UserGroupRole(user.getId(),groupInfo.getGroupId(), Role.ADMIN.name())) == 0){
+        if (userService.addUserRole(new UserGroupRole(user.getId(), groupInfo.getGroupId(), Role.ADMIN.name())) == 0) {
             return false;
         }
 
         return true;
     }
 
+    @Transactional
     public boolean deleteGroup(int groupId){
-        GroupInfoDTO groupInfoDTO = groupRepository.getGroup(groupId);
+        GroupInfoDTO groupInfoDTO = getGroup(groupId);
 
         if(!groupInfoDTO.getThumbnailPath().isEmpty()){
             String filePath = uploadDirectory + "/" + groupInfoDTO.getThumbnailPath();
@@ -122,7 +139,11 @@ public class GroupService {
             if(!file.delete()) throw new RuntimeException("썸네일 파일 삭제 실패");
         }
 
+        if(groupInfoDTO.getTags().length > 0) {
+            tagService.deleteGroupTagRole(groupInfoDTO);
+        }
         if(groupRepository.deleteGroup(groupId) == 0) throw new RuntimeException("데이터베이스 삭제 실패");
+
         return true;
     }
 

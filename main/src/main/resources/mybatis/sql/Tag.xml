@@ -14,6 +14,24 @@
         )
     </insert>
 
+    <insert id="addGroupTagRole" parameterType="map">
+        INSERT INTO group_tag(group_id,tag_id)
+        Values
+        <foreach item="tagId" collection="tagsId" separator=",">
+            (
+                #{groupId},
+                #{tagId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getGroupTags" parameterType="Integer" resultType="string">
+        SELECT t.tag_name
+        FROM group_tag gt
+        JOIN tag t ON gt.tag_id = t.tag_id
+        WHERE gt.group_id = #{groupId}
+    </select>
+
     <select id="getTagIds" resultType="Integer" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
         SELECT tag_id
         FROM tag
@@ -31,4 +49,12 @@
             #{id}
         </foreach>
     </select>
+
+    <delete id="deleteTags" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
+        delete from tag
+        WHERE tag_name IN
+        <foreach item="tagName"  collection="tagNames" open="(" separator="," close=")">
+            #{tagName}
+        </foreach>
+    </delete>
 </mapper>
