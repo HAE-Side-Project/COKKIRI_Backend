@@ -1,59 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.coggiri.main.mvc.repository.TagRepository">
-    <insert id="createTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tagId">
-        INSERT INTO tag(tag_name)
-        SELECT t.name
-        FROM (
-        <foreach collection="tagNames" item="tag" separator=" UNION ALL ">
-            SELECT #{tag} AS name
-        </foreach>
-        ) t
-        WHERE NOT EXISTS (
-        SELECT 1 FROM Tag WHERE name = t.name
-        )
-    </insert>
 
-    <insert id="addGroupTagRole" parameterType="map">
-        INSERT INTO group_tag(group_id,tag_id)
+    <insert id="addGroupTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
+        INSERT INTO group_tag(group_id,tag_name)
         Values
-        <foreach item="tagId" collection="tagsId" separator=",">
+        <foreach item="tagName" collection="tags.tagNames" separator=",">
             (
                 #{groupId},
-                #{tagId}
+                #{tagName}
             )
         </foreach>
     </insert>
 
-    <select id="getGroupTags" parameterType="Integer" resultType="string">
-        SELECT t.tag_name
-        FROM group_tag gt
-        JOIN tag t ON gt.tag_id = t.tag_id
-        WHERE gt.group_id = #{groupId}
+    <insert id="addTaskTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
+        INSERT INTO task_tag(task_id,tag_name)
+        Values
+        <foreach item="tag" collection="tags.tagNames" separator=",">
+            (
+                #{taskId},
+                #{tag}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getGroupTag" parameterType="Integer" resultType="string">
+        SELECT tag_name
+        FROM group_tag
+        WHERE group_id = #{groupId}
     </select>
 
-    <select id="getTagIds" resultType="Integer" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
-        SELECT tag_id
-        FROM tag
+    <select id="getTaskTag" parameterType="Integer" resultType="string">
+        SELECT tag_name
+        FROM task_tag
+        WHERE task_id = #{taskId}
+    </select>
+
+    <delete id="deleteGroupTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
+        delete from group_tag
         WHERE tag_name IN
-        <foreach item="tagName" collection="tagNames" open="(" separator="," close=")">
+        <foreach item="tagName"  collection="tags.tagNames" open="(" separator="," close=")">
             #{tagName}
         </foreach>
-    </select>
-    
-    <select id="getTagNames" resultType="string" parameterType="list">
-        SELECT tag_name
-        FROM tag
-        WHERE tag_id IN
-        <foreach item="id" collection="list" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </select>
+    </delete>
 
-    <delete id="deleteTags" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
-        delete from tag
+    <delete id="deleteTaskTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
+        delete from task_tag
         WHERE tag_name IN
-        <foreach item="tagName"  collection="tagNames" open="(" separator="," close=")">
+        <foreach item="tagName"  collection="tags.tagNames" open="(" separator="," close=")">
             #{tagName}
         </foreach>
     </delete>

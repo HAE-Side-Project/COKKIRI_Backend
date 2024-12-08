@@ -1,5 +1,6 @@
 package com.coggiri.main.mvc.apiController;
 
+import com.coggiri.main.customEnums.TagType;
 import com.coggiri.main.mvc.service.TagService;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,38 +21,42 @@ public class TagApiController {
     @Autowired
     private TagService tagService;
 
-    @PostMapping("/createTag")
+    @PostMapping("/addGroupTag")
     public ResponseEntity<Map<String,Object>> createTag(@RequestBody Map<String,Object> map){
         Map<String, Object> response = new HashMap<>();
+        int id = Integer.parseInt(map.get("id").toString());
+        String type = map.get("type").toString();
         List<String> tagList = (List<String>) map.get("tag");
         String[] tags = tagList.toArray(new String[0]);
 
-        tagService.createTag(tags);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/getTagsId")
-    public ResponseEntity<Map<String,Object>> getTags(@RequestBody Map<String,Object> map){
-        Map<String, Object> response = new HashMap<>();
-        List<String> tagList = (List<String>) map.get("tag");
-        String[] tags = tagList.toArray(new String[0]);
-
-        ArrayList<Integer> tagIds = tagService.getTagId(tags);
-        ArrayList<String> tagNames = tagService.getTagName(tagIds);
-        response.put("tag",tagIds);
-        response.put("name",tagNames);
+        tagService.createTag(id,tags, TagType.GROUP.name());
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/getGroupTag")
-    public ResponseEntity<Map<String,Object>> getGroupTag(@RequestBody Map<String,Object> map){
-        Map<String,Object> response = new HashMap<>();
-        String groupId = map.get("groupId").toString();
-        String[] tags = tagService.getGroupTags(Integer.parseInt(groupId));
-        response.put("success",true);
-        response.put("tag",tags);
+    public ResponseEntity<Map<String,Object>> getTags(@RequestBody Map<String,Object> map){
+        Map<String, Object> response = new HashMap<>();
+        int groupId = Integer.parseInt((String) map.get("groupId"));
+
+        String[] tag = tagService.getTags(groupId,TagType.GROUP.name());
+        response.put("tag",tag);
+
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/deleteGroupTag")
+    public ResponseEntity<Map<String,Object>> deleteGroupTag(@RequestBody Map<String,Object> map){
+        Map<String,Object> response = new HashMap<>();
+        String groupId = map.get("groupId").toString();
+        List<String> tagList = (List<String>) map.get("tag");
+        String[] tag = tagList.toArray(new String[0]);
+
+        tagService.deleteTag(Integer.parseInt(groupId),tag,TagType.GROUP.name());
+
+        response.put("success",true);
+        return ResponseEntity.ok(response);
+    }
+
+
 }

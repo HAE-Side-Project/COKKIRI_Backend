@@ -1,5 +1,6 @@
 package com.coggiri.main.mvc.service;
 
+import com.coggiri.main.customEnums.TagType;
 import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.entity.Tag;
 import com.coggiri.main.mvc.repository.TagRepository;
@@ -13,37 +14,34 @@ public class TagService {
     @Autowired
     TagRepository tagRepository;
 
-    public void createTag(String[] tags){
+    public void createTag(int id,String[] tags,String tagType){
+
         Tag tag = new Tag(tags);
-        tagRepository.createTag(tag);
+        if(TagType.valueOf(tagType) == TagType.GROUP){
+            tagRepository.addGroupTag(id,tag);
+        }else if(TagType.valueOf(tagType) == TagType.TASK){
+            tagRepository.addTaskTag(id,tag);
+        }
     }
 
-    public void addGroupTagRole(int groupId,String[] tags){
+    public void deleteTag(int id,String[] tags,String tagType){
         Tag tag = new Tag(tags);
-        ArrayList<Integer> tagIds =  tagRepository.getTagIds(tag);
-        tagRepository.addGroupTagRole(groupId,tagIds);
+        if(TagType.valueOf(tagType) == TagType.GROUP){
+            tagRepository.deleteGroupTag(id,tag);
+        }else if(TagType.valueOf(tagType) == TagType.TASK){
+            tagRepository.deleteTaskTag(id,tag);
+        }
     }
 
-    public void deleteGroupTagRole(GroupInfoDTO groupInfoDTO){
-
-        deleteTags(groupInfoDTO.getTags());
+    public String[] getTags(int id, String tagType){
+        String[] tags = null;
+        if(TagType.valueOf(tagType) == TagType.GROUP){
+            tags = tagRepository.getGroupTag(id);
+        }else if(TagType.valueOf(tagType) == TagType.TASK){
+            tags = tagRepository.getTaskTag(id);
+        }
+        return tags;
     }
 
-    public String[] getGroupTags(int groupId){
-        return tagRepository.getGroupTags(groupId);
-    }
 
-    public ArrayList<Integer> getTagId(String[] tags){
-        Tag tag = new Tag(tags);
-        return tagRepository.getTagIds(tag);
-    }
-
-    public ArrayList<String> getTagName(ArrayList<Integer> tagsId){
-        return tagRepository.getTagNames(tagsId);
-    }
-
-    public void deleteTags(String[] tags){
-        Tag tag = new Tag(tags);
-        tagRepository.deleteTags(tag);
-    }
 }
