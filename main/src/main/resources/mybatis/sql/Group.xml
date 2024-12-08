@@ -13,14 +13,21 @@
             #{thumbnailPath}
         );
     </insert>
-    
+
+    <select id="countGroupTotalNum" resultType="int">
+        select count(*) from groups;
+    </select>
+
     <select id="getGroupList" parameterType="map" resultType="com.coggiri.main.mvc.domain.dto.GroupInfoDTO">
         select
             group_id as groupId,
             group_category as groupCategory,
             group_name as groupName,
             group_number as groupNumber,
-            thumbnail_path as thumbnailPath
+            thumbnail_path as thumbnailPath,
+            group_intro as groupIntro,
+            group_rule as groupRule,
+            group_condition as groupCondition
         From groups
         where 1=1
         <if test="keyword != null and keyword != ''">

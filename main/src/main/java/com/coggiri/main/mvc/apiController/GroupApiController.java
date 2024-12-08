@@ -82,27 +82,31 @@ public class GroupApiController {
                                     schemaProperties = {
                                             @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
                                             @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환")),
-                                            @SchemaProperty(name = "groupList",schema = @Schema(implementation = GroupInfoDTO.class,description = "그룹 정보 리스트"))
+                                            @SchemaProperty(name = "groupList",schema = @Schema(implementation = GroupInfoDTO.class,description = "그룹 정보 리스트")),
+                                            @SchemaProperty(name = "totalNum",schema = @Schema(type = "int",description = "그룹 전체 개수"))
                                     }
                             )
                     )
             },
             parameters = {
                     @Parameter(name = "keyword",description = "검색어",example = "Study"),
-                    @Parameter(name = "pageNum",description = "페이지 개수", example = "1")
+                    @Parameter(name = "pageNum",description = "페이지 개수", example = "1"),
+                    @Parameter(name = "offset",description = "가져올 데이터 개수", example = "20")
             }
     )
     @ResponseBody
     @GetMapping(value = "/getGroupList")
-    public ResponseEntity<Map<String,Object>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1")  int pageNum){
+    public ResponseEntity<Map<String,Object>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1")  int pageNum, @RequestParam(name = "offset",defaultValue = "0") int offset){
         Map<String,Object> response = new HashMap<>();
-        SearchInFoDTO searchInFoDTO = new SearchInFoDTO(keyword,pageNum);
+        SearchInFoDTO searchInFoDTO = new SearchInFoDTO(keyword,pageNum,offset);
 
         try {
             List<GroupInfoDTO> groupInfoList = groupService.getGroupList(searchInFoDTO);
+            int totalNum = groupService.countGroupTotalNum();
             response.put("success",true);
             response.put("message","그룹 리스트 반환 성공");
             response.put("groupList",groupInfoList);
+            response.put("totalNum",totalNum);
         }catch (Exception e){
             response.put("success",false);
             response.put("message",e.getMessage());

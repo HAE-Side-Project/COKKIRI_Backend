@@ -14,6 +14,7 @@ import java.util.Map;
 public interface GroupRepository {
     int createGroup(Group group);
     int deleteGroup(int groupId);
+    int countGroupTotalNum();
     GroupInfoDTO getGroup(int groupId);
     List<GroupInfoDTO> getGroupList(Map<String,Object> params);
 }
