@@ -176,8 +176,8 @@ public class UserApiController {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schemaProperties = {
-                                            @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "아이디",example = "user")),
-                                            @SchemaProperty(name = "password", schema = @Schema(type = "string", description = "변경할 비밀번호",example = "1234"))
+                                            @SchemaProperty(name = "id", schema = @Schema(type = "string", description = "그룹 pk or 태스크 pk",example = "1")),
+                                            @SchemaProperty(name = "type", schema = @Schema(type = "string", description = "그룹/태스크 태그 구별",example = "GROUP/TASK"))
                                     }
                             )
                     }

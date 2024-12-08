@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
+//import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,18 +61,18 @@ public class GroupApiController {
                                                            @RequestPart(value = "groupInfo",required = true) GroupRegisterDTO groupRegisterDTO,
                                                           @RequestPart(value = "image",required = false) MultipartFile image){
         Map<String,Object> response = new HashMap<>();
-
-        if(groupService.createGroup(userId,groupRegisterDTO,image)){
+        try{
+            groupService.createGroup(userId,groupRegisterDTO,image);
             response.put("success",true);
             response.put("message","그룹 생성 완료");
-        }else{
+        }catch (Exception e){
             response.put("success",false);
-            response.put("message","그룹 생성 실패");
+            response.put("message",e.getMessage());
         }
 
         return ResponseEntity.ok(response);
     }
-
+    //수정 필요
     @Operation(summary = "그룹 리스트 정보 리스트", description = "그룹 정보 리스트 반환 API",
             responses = {
                     @ApiResponse(
@@ -112,29 +113,28 @@ public class GroupApiController {
     }
 
     @Operation(summary = "그룹 삭제",description = "그룹 삭제 API",
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "그룹 삭제 API",
+                        content = @Content(
+                                schemaProperties = {
+                                        @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
+                                        @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환",example = "그룹 삭제 완료")),
+                                }
+                        )
+                )
+            },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schemaProperties = {
-                                            @SchemaProperty(name = "groupId", schema = @Schema(type = "string", description = "그룹 pk"))
+                                            @SchemaProperty(name = "groupId", schema = @Schema(type = "string", description = "그룹 pk",example = "1"))
                                     }
                             )
                     }
             ))
-    @ApiResponse(
-            responseCode = "200",
-            description = "그룹 삭제 API",
-            content = @Content(
-                    schemaProperties = {
-                            @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
-                            @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환")),
-                    }
-            )
-    )
-    @Parameters(
-            @Parameter(name = "groupId",description = "그룹 pk",example = "1")
-    )
     @RequireGroupRole(value=Role.ADMIN, groupIdParameter = "groupId")
     @ResponseBody
     @PostMapping("/deleteGroup")
