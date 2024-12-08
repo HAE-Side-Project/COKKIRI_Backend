@@ -23,6 +23,11 @@
         );
     </insert>
 
+    <delete id="deleteUserRoleByGroupId" parameterType="int">
+        DELETE from user_group_role
+        where group_id = #{groupId}
+    </delete>
+
     <select id="findByUsername" resultType="com.coggiri.main.mvc.domain.entity.User">
         SELECT id,user_id,password,user_name,email
         FROM user

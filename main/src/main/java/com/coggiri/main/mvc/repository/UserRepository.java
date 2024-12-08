@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UserRepository {
     int register(User userRegisterDTO);
     int addUserRole(UserGroupRole userGroupRole);
+    void deleteUserRoleByGroupId(int groupId);
     int changePassword(User user);
     Optional<User> findByUsername(String userId);
     Optional<User> findByEmail(String email);

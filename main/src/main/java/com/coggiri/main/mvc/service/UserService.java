@@ -60,6 +60,10 @@ public class UserService{
         return userRepository.addUserRole(userGroupRole);
     }
 
+    public void deleteUserRoleByGroupId(int groupId){
+        userRepository.deleteUserRoleByGroupId(groupId);
+    }
+
     public JwtToken login(String userId, String password){
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId,password);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);

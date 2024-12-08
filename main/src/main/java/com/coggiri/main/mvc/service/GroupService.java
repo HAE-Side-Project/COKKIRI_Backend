@@ -1,6 +1,7 @@
 package com.coggiri.main.mvc.service;
 
 import com.coggiri.main.customEnums.Role;
+import com.coggiri.main.customEnums.TagType;
 import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
 import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
@@ -68,7 +69,7 @@ public class GroupService {
                     log.info("Thumbnail File Create Failed" + e.getMessage());
                 }
             }
-            String[] tags = tagService.getGroupTags(group.getGroupId());
+            String[] tags = tagService.getTags(group.getGroupId(),TagType.GROUP.name());
             if(tags.length > 0) group.setTags(tags);
         }
 
@@ -77,12 +78,13 @@ public class GroupService {
 
     public GroupInfoDTO getGroup(int groupId){
         GroupInfoDTO groupInfoDTO = groupRepository.getGroup(groupId);
-        String[] tags = tagService.getGroupTags(groupId);
+        String[] tags = tagService.getTags(groupId,TagType.GROUP.name());
 
         groupInfoDTO.setTags(tags);
 
         return groupInfoDTO;
     }
+
     @Transactional
     public boolean createGroup(String userId,GroupRegisterDTO groupRegisterDTO, MultipartFile image){
         User user = userService.findUserById(userId).orElseThrow(() ->
@@ -113,11 +115,9 @@ public class GroupService {
         Group groupInfo = new Group(groupRegisterDTO,fileName);
         // 그룹 정보 저장
         groupRepository.createGroup(groupInfo);
+
         if(groupRegisterDTO.getGroupTags().length > 0) {
-            // 그룹 태그 저장
-            tagService.createTag(groupRegisterDTO.getGroupTags());
-            // 그룹 태그 관계 저장
-            tagService.addGroupTagRole(groupInfo.getGroupId(),groupRegisterDTO.getGroupTags());
+            tagService.createTag(groupInfo.getGroupId(),groupRegisterDTO.getGroupTags(), TagType.GROUP.name());
         }
         // 그룹 유저 롤 저장
         if (userService.addUserRole(new UserGroupRole(user.getId(), groupInfo.getGroupId(), Role.ADMIN.name())) == 0) {
@@ -140,8 +140,10 @@ public class GroupService {
         }
 
         if(groupInfoDTO.getTags().length > 0) {
-            tagService.deleteGroupTagRole(groupInfoDTO);
+            tagService.deleteTag(groupInfoDTO.getGroupId(),groupInfoDTO.getTags(),TagType.GROUP.name());
         }
+
+        userService.deleteUserRoleByGroupId(groupId);
         if(groupRepository.deleteGroup(groupId) == 0) throw new RuntimeException("데이터베이스 삭제 실패");
 
         return true;
