@@ -86,7 +86,7 @@ public class GroupService {
     }
 
     @Transactional
-    public boolean createGroup(String userId,GroupRegisterDTO groupRegisterDTO, MultipartFile image){
+    public void createGroup(String userId,GroupRegisterDTO groupRegisterDTO, MultipartFile image){
         User user = userService.findUserById(userId).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
@@ -94,7 +94,9 @@ public class GroupService {
         if(!image.isEmpty()){
             String fileExtension = getFileExtension(image.getOriginalFilename());
 
-            if(!isValidImageExtension(fileExtension)) return false;
+            if(!isValidImageExtension(fileExtension)){
+                throw new IllegalArgumentException("허용되지 않은 확장자입니다");
+            }
 
             String filePath = "";
             while(true) {
@@ -109,22 +111,23 @@ public class GroupService {
                 saveFile(image, filePath);
             } catch (Exception e) {
                 log.info("createGroup Error: " + e.getMessage());
+                throw new RuntimeException(e.getMessage());
             }
         }
 
         Group groupInfo = new Group(groupRegisterDTO,fileName);
         // 그룹 정보 저장
-        groupRepository.createGroup(groupInfo);
+        if(groupRepository.createGroup(groupInfo) == 0){
+            throw new RuntimeException("그룹 정보 저장 실패");
+        }
 
         if(groupRegisterDTO.getGroupTags().length > 0) {
             tagService.createTag(groupInfo.getGroupId(),groupRegisterDTO.getGroupTags(), TagType.GROUP.name());
         }
         // 그룹 유저 롤 저장
         if (userService.addUserRole(new UserGroupRole(user.getId(), groupInfo.getGroupId(), Role.ADMIN.name())) == 0) {
-            return false;
+            throw new RuntimeException("그룹 권한 정보 저장 실패");
         }
-
-        return true;
     }
 
     @Transactional
@@ -133,7 +136,7 @@ public class GroupService {
 
         if(!groupInfoDTO.getThumbnailPath().isEmpty()){
             String filePath = uploadDirectory + "/" + groupInfoDTO.getThumbnailPath();
-
+            log.info("filePath: " + filePath);
             File file = new File(filePath);
             if(!file.exists()) throw new RuntimeException("존재하지 않는 썸네일 파일입니다.");
             if(!file.delete()) throw new RuntimeException("썸네일 파일 삭제 실패");
