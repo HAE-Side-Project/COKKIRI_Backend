@@ -43,13 +43,13 @@ public class GroupService {
     private static final String[] ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "bmp", "webp"};
 
     public List<GroupInfoDTO> getGroupList(SearchInFoDTO searchInFoDTO){
-        int offset = searchInFoDTO.getPageNum()-1;
-        if(offset < 0) throw new IllegalArgumentException("잘못된 Page Number입니다.");
-
+        int page = searchInFoDTO.getPageNum()-1;
+        int offset = searchInFoDTO.getOffset();
+        if(page < 0) throw new IllegalArgumentException("잘못된 Page Number입니다.");
         Map<String,Object> params = new HashMap<>();
         params.put("keyword",searchInFoDTO.getKeyword());
-        params.put("page",offset+100);
-        params.put("offset",offset*100);
+        params.put("page",offset);
+        params.put("offset",page*offset+2);
         List<GroupInfoDTO> groupList =  groupRepository.getGroupList(params);
 
         for(GroupInfoDTO group : groupList){
@@ -83,6 +83,10 @@ public class GroupService {
         groupInfoDTO.setTags(tags);
 
         return groupInfoDTO;
+    }
+
+    public int countGroupTotalNum(){
+        return groupRepository.countGroupTotalNum();
     }
 
     @Transactional

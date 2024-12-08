@@ -1,13 +1,10 @@
 package com.coggiri.main.mvc.service;
 
 import com.coggiri.main.customEnums.TagType;
-import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.entity.Tag;
 import com.coggiri.main.mvc.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class TagService {
