@@ -16,6 +16,10 @@ public class UserGroupRole {
     @Schema(example = "USER",description = "권한")
     private String role;
 
+    UserGroupRole(){
+
+    }
+
     public UserGroupRole(int userId, int groupId, String role){
         this.userId = userId;
         this.groupId = groupId;

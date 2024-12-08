@@ -18,6 +18,9 @@ public class GroupInfoDTO {
     @Schema(example = "asd.jpg",description = "이미지 파일 이름")
     private String thumbnailPath;
     @Setter
+    @Schema(example = "project,study",description = "태그")
+    private String[] tags;
+    @Setter
     @Schema(example = "",description = "이미지 파일 데이터")
     private String thumbnailBase64;
 

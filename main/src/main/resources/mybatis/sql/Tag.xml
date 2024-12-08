@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coggiri.main.mvc.repository.TagRepository">
+
+    <insert id="addGroupTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
+        INSERT INTO group_tag(group_id,tag_name)
+        Values
+        <foreach item="tagName" collection="tags.tagNames" separator=",">
+            (
+                #{groupId},
+                #{tagName}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addTaskTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
+        INSERT INTO task_tag(task_id,tag_name)
+        Values
+        <foreach item="tag" collection="tags.tagNames" separator=",">
+            (
+                #{taskId},
+                #{tag}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getGroupTag" parameterType="Integer" resultType="string">
+        SELECT tag_name
+        FROM group_tag
+        WHERE group_id = #{groupId}
+    </select>
+
+    <select id="getTaskTag" parameterType="Integer" resultType="string">
+        SELECT tag_name
+        FROM task_tag
+        WHERE task_id = #{taskId}
+    </select>
+
+    <delete id="deleteGroupTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
+        delete from group_tag
+        WHERE tag_name IN
+        <foreach item="tagName"  collection="tags.tagNames" open="(" separator="," close=")">
+            #{tagName}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTaskTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
+        delete from task_tag
+        WHERE tag_name IN
+        <foreach item="tagName"  collection="tags.tagNames" open="(" separator="," close=")">
+            #{tagName}
+        </foreach>
+    </delete>
+</mapper>

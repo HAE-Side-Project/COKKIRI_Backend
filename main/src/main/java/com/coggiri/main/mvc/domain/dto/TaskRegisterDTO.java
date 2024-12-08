@@ -18,14 +18,27 @@ public class TaskRegisterDTO {
     private LocalDate registerDate;
     @Schema (example = "2024-12-02", description = "마감날짜")
     private LocalDate dueDate;
+    @Schema (example = "0",description = "그룹 pk")
+    private int groupId;
+    @Schema (example = "[1,2,3]",description = "관련 멤버")
+    private int[] userId;
+    @Schema (example = "[\"backend\",\"frontend\"]",description = "태그")
+    private String[] tags;
+
+    public TaskRegisterDTO(){
+
+    }
 
     TaskRegisterDTO(boolean groupOption,
                     String taskName, int taskType, LocalDate registerDate,
-                    LocalDate dueDate){
+                    LocalDate dueDate,int groupId,int[] userId, String[] tags){
         this.groupOption = groupOption;
         this.taskName = taskName;
         this.taskType = taskType;
         this.registerDate = registerDate;
         this.dueDate = dueDate;
+        this.groupId = groupId;
+        this.userId = userId;
+        this.tags = tags;
     }
 }

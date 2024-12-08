@@ -54,8 +54,7 @@ public class GroupApiController {
                     @Parameter(name = "image",description = "이미지파일",schema = @Schema(implementation = MultipartFile.class))
             }
     )
-    @RequestBody(content = @Content(
-            encoding = @Encoding(name = "groupInfo",contentType = MediaType.APPLICATION_JSON_VALUE)))
+    @RequestBody(content = @Content(encoding = @Encoding(name = "groupInfo",contentType = MediaType.APPLICATION_JSON_VALUE)))
     @PostMapping(value = "/createGroup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String,Object>> createGroup( @RequestPart(value = "userId",required = true) String userId,
                                                            @RequestPart(value = "groupInfo",required = true) GroupRegisterDTO groupRegisterDTO,
@@ -139,7 +138,7 @@ public class GroupApiController {
     @RequireGroupRole(value=Role.ADMIN, groupIdParameter = "groupId")
     @ResponseBody
     @PostMapping("/deleteGroup")
-    public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map, Authentication authentication){
+    public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map){
         Map<String, Object> response = new HashMap<>();
         String groupId = map.get("groupId").toString();
         try{
