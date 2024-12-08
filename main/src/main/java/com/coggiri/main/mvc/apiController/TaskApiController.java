@@ -34,4 +34,20 @@ public class TaskApiController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("deleteTask")
+    public ResponseEntity<Map<String,Object>> deleteTask(@RequestBody Map<String,Object> map){
+        Map<String,Object> response = new HashMap<>();
+        String taskId = map.get("taskId").toString();
+        try{
+            taskService.deleteTask(Integer.parseInt(taskId));
+            response.put("success",true);
+            response.put("message","태스크 삭제 완료");
+        }catch (Exception e){
+            response.put("success",false);
+            response.put("message",e.getMessage());
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
 }

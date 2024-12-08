@@ -14,7 +14,7 @@ public class Task {
     @Schema (example = "true",description = "개인 태스크:false, 그룹 태스크:true")
     private boolean groupOption;
     @Schema(example = "true",description = "완료 여부")
-    private boolean achiveCondition;
+    private boolean achieveCondition;
     @Schema (example = "밥먹기",description = "태스크 정의")
     private String taskName;
     @Schema (example = "0", description = "0: 투두 , 1: 태스크")
@@ -24,11 +24,11 @@ public class Task {
     @Schema (example = "2024-12-02", description = "마감날짜")
     private LocalDate dueDate;
 
-    Task(int taskId, boolean groupOption, boolean achiveCondition,
+    Task(int taskId, boolean groupOption, boolean achieveCondition,
          String taskName, int taskType, LocalDate registerDate, LocalDate dueDate){
         this.taskId = taskId;
         this.groupOption = groupOption;
-        this.achiveCondition = achiveCondition;
+        this.achieveCondition = achieveCondition;
         this.taskName = taskName;
         this.taskType = taskType;
         this.registerDate = registerDate;
@@ -37,7 +37,7 @@ public class Task {
 
     public Task(TaskRegisterDTO taskRegisterDTO){
         this.groupOption = taskRegisterDTO.isGroupOption();
-        this.achiveCondition = false;
+        this.achieveCondition = false;
         this.taskName = taskRegisterDTO.getTaskName();
         this.taskType = taskRegisterDTO.getTaskType();
         this.registerDate = taskRegisterDTO.getRegisterDate();
