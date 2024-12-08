@@ -8,6 +8,8 @@ import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
 import com.coggiri.main.mvc.repository.UserRepository;
 import com.coggiri.main.jwtUtils.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @Transactional
 @Service
 public class UserService{
+    private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private final UserRepository userRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -37,6 +40,7 @@ public class UserService{
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void register(UserDTO userInfo){
         if(userRepository.findByUsername(userInfo.getUserId()).isPresent()){
             throw new IllegalArgumentException("이미 사용중인 사용자 아이디입니다.");
@@ -51,8 +55,15 @@ public class UserService{
             throw new IllegalArgumentException("회원 정보 데이터베이스 저장 실패");
         }
 
-        if(addUserRole(new UserGroupRole(user.getId(),0, Role.USER.name())) == 0){
+        if(addUserRole(new UserGroupRole(user.getId(),1, Role.USER.name())) == 0){
             throw new IllegalArgumentException("회원 권한 데이터베이스 저장 실패");
+        }
+    }
+
+    public void deleteUser(int userId){
+        log.info("userId: " + userId);
+        if(userRepository.deleteUser(userId) < 1){
+            throw new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다.");
         }
     }
 

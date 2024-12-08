@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,14 +48,21 @@ public class ValidationController {
                         )
                 )
             },
-            parameters = {
-                    @Parameter(name = "email",description = "이메일",example = "sample@naver.com"),
-                    @Parameter(name = "authCode",description = "인증번호",example = "124asd234")
-            }
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schemaProperties = {
+                                            @SchemaProperty(name = "email", schema = @Schema(type = "string", description = "이메일",example = "sample@naver.com")),
+                                            @SchemaProperty(name = "authCode", schema = @Schema(type = "string", description = "인증번호",example = "124asd234"))
+                                    }
+                            )
+                    }
+            )
     )
     @ResponseBody
     @PostMapping("/sendEmail")
-    public ResponseEntity<Map<String,Object>> sendVerificationEmail(@Parameter(description = "이메일 정보") @RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
+    public ResponseEntity<Map<String,Object>> sendVerificationEmail(@RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
         Map<String, Object> response = new HashMap<>();
         try{
             if(userService.findUserByEmail(mailDTO.getEmail()).isPresent()){
@@ -80,15 +88,22 @@ public class ValidationController {
                         content = @Content(
                                 schemaProperties = {
                                         @SchemaProperty(name = "success", schema = @Schema(type = "boolean", description = "성공 여부")),
-                                        @SchemaProperty(name = "message", schema = @Schema(type = "string", description = "성공 및 에러 메세지"))
+                                        @SchemaProperty(name = "message", schema = @Schema(type = "string", description = "성공 및 에러 메세지",example = "인증이 완료되었습니다"))
                                 }
                         )
                 )
             },
-            parameters = {
-                    @Parameter(name = "email",description = "이메일",example = "sample@naver.com"),
-                    @Parameter(name = "authCode",description = "인증번호",example = "124asd234")
-            }
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schemaProperties = {
+                                            @SchemaProperty(name = "email", schema = @Schema(type = "string", description = "이메일",example = "sample@naver.com")),
+                                            @SchemaProperty(name = "authCode", schema = @Schema(type = "string", description = "인증번호",example = "124asd234"))
+                                    }
+                            )
+                    }
+            )
     )
     @ResponseBody
     @PostMapping("/verifyEmail")
@@ -135,7 +150,17 @@ public class ValidationController {
                                 }
                         )
                 )
-            }
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schemaProperties = {
+                                            @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "아이디",example = "user"))
+                                    }
+                            )
+                    }
+            )
     )
     @PostMapping("/Id")
     public ResponseEntity<Map<String,Object>> validateId(@RequestBody Map<String,Object> map){

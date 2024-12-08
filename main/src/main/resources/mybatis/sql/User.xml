@@ -10,11 +10,16 @@
             #{email});
     </insert>
 
+    <delete id="deleteUser" parameterType="int">
+        DELETE from user
+        WHERE id = #{userId}
+    </delete>
+
     <update id="changePassword" parameterType="com.coggiri.main.mvc.domain.entity.User">
         UPDATE user SET password=#{password} where id = #{id}
     </update>
 
-    <insert id="addUserRole" parameterType="com.coggiri.main.mvc.domain.entity.UserGroupRole" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="addUserRole" parameterType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
         INSERT INTO user_group_role(user_id,group_id,role)
         Values(
             #{userId},
@@ -41,13 +46,13 @@
     </select>
 
     <select id="findGroupRolesByUserId" resultType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
-        SELECT id, user_id as userId, group_id as groupId, role
+        SELECT user_id as userId, group_id as groupId, role
         FROM user_group_role
         WHERE user_id = #{userId}
     </select>
 
     <select id="findGroupRoleByUserId" resultType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
-        SELECT id, user_id as userId, group_id as groupId, role
+        SELECT user_id as userId, group_id as groupId, role
         FROM user_group_role
         WHERE user_id = #{userId} AND group_id = #{groupId}
     </select>

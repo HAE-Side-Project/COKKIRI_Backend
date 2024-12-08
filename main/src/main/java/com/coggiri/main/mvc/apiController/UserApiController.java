@@ -15,8 +15,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -43,17 +45,24 @@ public class UserApiController {
                                 schemaProperties = {
                                         @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
                                         @SchemaProperty(name = "JwtToken", schema = @Schema(implementation = JwtToken.class,description = "JWT 토큰")),
-                                        @SchemaProperty(name = "userId", schema = @Schema(type = "string",description = "유저 아이디"))
+                                        @SchemaProperty(name = "userId", schema = @Schema(type = "string",description = "유저 아이디" ,example = "user"))
                                 }
                         )
                 )},
-            parameters = {
-                    @Parameter(name = "userId", description = "아이디", example = "abc1234"),
-                    @Parameter(name = "password",description = "비밀번호",example = "1234")
-            }
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                        @Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schemaProperties = {
+                                        @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "아이디",example = "user")),
+                                        @SchemaProperty(name = "password", schema = @Schema(type = "string", description = "비밀번호",example = "1234"))
+                                }
+                        )
+                    }
+            )
     )
     @PostMapping("login")
-    public ResponseEntity<Map<String,Object>> login(@Parameter(description = "사용자 정보") @RequestBody UserLoginDTO userLoginDTO){
+    public ResponseEntity<Map<String,Object>> login(@RequestBody UserLoginDTO userLoginDTO){
         Map<String, Object> response = new HashMap<>();
         try {
             JwtToken jwtToken = userService.login(userLoginDTO.getUserId(), userLoginDTO.getPassword());
@@ -82,19 +91,23 @@ public class UserApiController {
                                 }
                         )
                 )},
-            parameters = {
-                    @Parameter(name = "userId",description = "아이디",example = "abcd1234"),
-                    @Parameter(name = "password",description = "비밀번호",example = "1234"),
-                    @Parameter(name = "userName",description = "이름",example = "홍길동"),
-                    @Parameter(name = "email",description = "이메일",example = "example@naver.com")
-            }
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schemaProperties = {
+                                            @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "아이디",example = "abcd1234")),
+                                            @SchemaProperty(name = "password", schema = @Schema(type = "string", description = "비밀번호",example = "1234")),
+                                            @SchemaProperty(name = "userName", schema = @Schema(type = "string", description = "이름",example = "홍길동")),
+                                            @SchemaProperty(name = "email", schema = @Schema(type = "string", description = "이메일",example = "example@naver.com")),
+                                    }
+                            )
+                    }
+            )
     )
-
     @PostMapping("register")
-    public ResponseEntity<Map<String, Object>> register(@Parameter(description = "사용자 정보") @RequestBody UserDTO userInfo) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody UserDTO userInfo) {
         Map<String, Object> response = new HashMap<>();
-
-        log.debug("register called");
 
         try {
             userService.register(userInfo);
@@ -107,27 +120,72 @@ public class UserApiController {
 
         return ResponseEntity.ok(response);
     }
+    @Operation(summary = "회원 탈퇴", description = "회원탈퇴 API",
+        responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "회원 탈퇴 완료",
+                        content = @Content(
+                                schemaProperties = {
+                                        @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
+                                        @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지",example = "회원 탈퇴 완료" ))
+                                }
+                        )
+                )},
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                content = {
+                        @Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schemaProperties = {
+                                        @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "user pk",example = "1")),
+                                }
+                        )
+                }
+        )
+    )
+    @PostMapping("deleteUser")
+    public ResponseEntity<Map<String,Object>> deleteUser(@RequestBody Map<String,Object> map){
+        Map<String, Object> response = new HashMap<>();
+        int userId = Integer.parseInt(map.get("userId").toString());
+        try{
+            userService.deleteUser(userId);
+            response.put("success",true);
+            response.put("message","회원 탈퇴 완료");
+        }catch (Exception e){
+            response.put("success",false);
+            response.put("message",e.getMessage());
+        }
 
-    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API")
-    @ApiResponse(
-            responseCode = "200",
-            description = "비밀번호 변경",
-            content = @Content(
-                    schemaProperties = {
-                            @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                            @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지"))
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API",
+        responses = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "비밀번호 변경",
+                    content = @Content(
+                            schemaProperties = {
+                                    @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
+                                    @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지",example = "비밀번호 변경 완료" ))
+                            }
+                    )
+            )},
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schemaProperties = {
+                                            @SchemaProperty(name = "id", schema = @Schema(type = "string", description = "그룹 pk or 태스크 pk",example = "1")),
+                                            @SchemaProperty(name = "type", schema = @Schema(type = "string", description = "그룹/태스크 태그 구별",example = "GROUP/TASK"))
+                                    }
+                            )
                     }
             )
     )
-    @Parameters(
-            value = {
-                    @Parameter(name = "userId", description = "아이디", example = "abcd1234"),
-                    @Parameter(name = "password", description = "변경할 비밀번호", example = "1234")
-            }
-    )
     @ResponseBody
     @PostMapping("changePassword")
-    public ResponseEntity<Map<String, Object>> changePassword(@Parameter(description = "사용자 정보", example = "userId") @RequestBody UserLoginDTO userLoginDTO){
+    public ResponseEntity<Map<String, Object>> changePassword(@RequestBody UserLoginDTO userLoginDTO){
         Map<String, Object> response = new HashMap<>();
 
         try{
