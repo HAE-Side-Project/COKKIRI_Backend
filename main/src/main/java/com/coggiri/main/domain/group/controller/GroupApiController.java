@@ -1,14 +1,13 @@
-package com.coggiri.main.mvc.apiController;
+package com.coggiri.main.domain.group.controller;
 
 import com.coggiri.main.customEnums.Role;
 import com.coggiri.main.jwtUtils.RequireGroupRole;
 import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
 import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
 import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
-import com.coggiri.main.mvc.service.GroupService;
+import com.coggiri.main.domain.group.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

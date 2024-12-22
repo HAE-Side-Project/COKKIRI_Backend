@@ -1,4 +1,4 @@
-package com.coggiri.main.mvc.service;
+package com.coggiri.main.domain.group.service;
 
 import com.coggiri.main.customEnums.Role;
 import com.coggiri.main.customEnums.TagType;
@@ -8,16 +8,15 @@ import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
 import com.coggiri.main.mvc.domain.entity.Group;
 import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
-import com.coggiri.main.mvc.repository.GroupRepository;
-import com.coggiri.main.mvc.repository.TagRepository;
+import com.coggiri.main.domain.group.repository.GroupRepository;
+import com.coggiri.main.domain.tag.service.TagService;
+import com.coggiri.main.domain.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;

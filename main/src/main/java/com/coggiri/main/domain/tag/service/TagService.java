@@ -1,8 +1,8 @@
-package com.coggiri.main.mvc.service;
+package com.coggiri.main.domain.tag.service;
 
 import com.coggiri.main.customEnums.TagType;
 import com.coggiri.main.mvc.domain.entity.Tag;
-import com.coggiri.main.mvc.repository.TagRepository;
+import com.coggiri.main.domain.tag.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

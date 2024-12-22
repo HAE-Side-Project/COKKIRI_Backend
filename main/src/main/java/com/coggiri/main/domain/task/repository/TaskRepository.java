@@ -1,4 +1,4 @@
-package com.coggiri.main.mvc.repository;
+package com.coggiri.main.domain.task.repository;
 
 import com.coggiri.main.mvc.domain.dto.TaskInfoDTO;
 import com.coggiri.main.mvc.domain.entity.Task;

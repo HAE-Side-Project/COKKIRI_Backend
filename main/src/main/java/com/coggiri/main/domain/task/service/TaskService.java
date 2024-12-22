@@ -1,10 +1,11 @@
-package com.coggiri.main.mvc.service;
+package com.coggiri.main.domain.task.service;
 
 import com.coggiri.main.customEnums.TagType;
+import com.coggiri.main.domain.tag.service.TagService;
 import com.coggiri.main.mvc.domain.dto.TaskRegisterDTO;
 import com.coggiri.main.mvc.domain.dto.TaskInfoDTO;
 import com.coggiri.main.mvc.domain.entity.Task;
-import com.coggiri.main.mvc.repository.TaskRepository;
+import com.coggiri.main.domain.task.repository.TaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

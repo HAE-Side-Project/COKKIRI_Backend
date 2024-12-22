@@ -1,11 +1,9 @@
-package com.coggiri.main.mvc.apiController;
+package com.coggiri.main.domain.task.controller;
 
-import com.coggiri.main.customEnums.TagType;
 import com.coggiri.main.mvc.domain.dto.TaskRegisterDTO;
-import com.coggiri.main.mvc.service.TagService;
-import com.coggiri.main.mvc.service.TaskService;
+import com.coggiri.main.domain.tag.service.TagService;
+import com.coggiri.main.domain.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Tag(name = "태스크 관련 기능",description = "Task 관련 API (아직 구현안됌 테스트 XXXX")
 @RestController
