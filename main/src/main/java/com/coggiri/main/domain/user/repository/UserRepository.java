@@ -1,7 +1,7 @@
 package com.coggiri.main.domain.user.repository;
 
-import com.coggiri.main.mvc.domain.entity.User;
-import com.coggiri.main.mvc.domain.entity.UserGroupRole;
+import com.coggiri.main.domain.user.model.entity.User;
+import com.coggiri.main.domain.user.model.entity.UserGroupRole;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

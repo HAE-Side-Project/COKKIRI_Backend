@@ -1,13 +1,13 @@
 package com.coggiri.main.domain.user.service;
 
-import com.coggiri.main.customEnums.Role;
-import com.coggiri.main.mvc.domain.dto.UserDTO;
-import com.coggiri.main.mvc.domain.dto.UserLoginDTO;
-import com.coggiri.main.mvc.domain.entity.JwtToken;
-import com.coggiri.main.mvc.domain.entity.User;
-import com.coggiri.main.mvc.domain.entity.UserGroupRole;
+import com.coggiri.main.commons.Enums.Role;
+import com.coggiri.main.domain.user.model.dto.UserDTO;
+import com.coggiri.main.domain.user.model.dto.UserLoginDTO;
+import com.coggiri.main.domain.user.model.entity.JwtToken;
+import com.coggiri.main.domain.user.model.entity.User;
+import com.coggiri.main.domain.user.model.entity.UserGroupRole;
 import com.coggiri.main.domain.user.repository.UserRepository;
-import com.coggiri.main.jwtUtils.JwtTokenProvider;
+import com.coggiri.main.commons.jwtUtils.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

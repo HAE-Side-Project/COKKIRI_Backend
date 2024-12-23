@@ -1,7 +1,7 @@
 package com.coggiri.main.domain.group.repository;
 
-import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
-import com.coggiri.main.mvc.domain.entity.Group;
+import com.coggiri.main.domain.group.model.dto.GroupInfoDTO;
+import com.coggiri.main.domain.group.model.entity.Group;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

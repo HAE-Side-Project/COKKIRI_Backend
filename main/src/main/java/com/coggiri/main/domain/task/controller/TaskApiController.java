@@ -1,6 +1,6 @@
 package com.coggiri.main.domain.task.controller;
 
-import com.coggiri.main.mvc.domain.dto.TaskRegisterDTO;
+import com.coggiri.main.domain.task.model.dto.TaskRegisterDTO;
 import com.coggiri.main.domain.tag.service.TagService;
 import com.coggiri.main.domain.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;

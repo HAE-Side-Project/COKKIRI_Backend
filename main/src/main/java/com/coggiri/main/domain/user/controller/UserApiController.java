@@ -1,8 +1,8 @@
 package com.coggiri.main.domain.user.controller;
 
-import com.coggiri.main.mvc.domain.dto.UserLoginDTO;
-import com.coggiri.main.mvc.domain.dto.UserDTO;
-import com.coggiri.main.mvc.domain.entity.JwtToken;
+import com.coggiri.main.domain.user.model.dto.UserLoginDTO;
+import com.coggiri.main.domain.user.model.dto.UserDTO;
+import com.coggiri.main.domain.user.model.entity.JwtToken;
 import com.coggiri.main.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

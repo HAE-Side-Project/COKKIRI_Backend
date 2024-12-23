@@ -1,13 +1,13 @@
 package com.coggiri.main.domain.group.service;
 
-import com.coggiri.main.customEnums.Role;
-import com.coggiri.main.customEnums.TagType;
-import com.coggiri.main.mvc.domain.dto.GroupInfoDTO;
-import com.coggiri.main.mvc.domain.dto.GroupRegisterDTO;
-import com.coggiri.main.mvc.domain.dto.SearchInFoDTO;
-import com.coggiri.main.mvc.domain.entity.Group;
-import com.coggiri.main.mvc.domain.entity.User;
-import com.coggiri.main.mvc.domain.entity.UserGroupRole;
+import com.coggiri.main.commons.Enums.Role;
+import com.coggiri.main.commons.Enums.TagType;
+import com.coggiri.main.domain.group.model.dto.GroupInfoDTO;
+import com.coggiri.main.domain.group.model.dto.GroupRegisterDTO;
+import com.coggiri.main.domain.task.model.dto.SearchInFoDTO;
+import com.coggiri.main.domain.group.model.entity.Group;
+import com.coggiri.main.domain.user.model.entity.User;
+import com.coggiri.main.domain.user.model.entity.UserGroupRole;
 import com.coggiri.main.domain.group.repository.GroupRepository;
 import com.coggiri.main.domain.tag.service.TagService;
 import com.coggiri.main.domain.user.service.UserService;

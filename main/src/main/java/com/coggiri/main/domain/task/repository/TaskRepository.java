@@ -1,7 +1,7 @@
 package com.coggiri.main.domain.task.repository;
 
-import com.coggiri.main.mvc.domain.dto.TaskInfoDTO;
-import com.coggiri.main.mvc.domain.entity.Task;
+import com.coggiri.main.domain.task.model.dto.TaskInfoDTO;
+import com.coggiri.main.domain.task.model.entity.Task;
 import org.springframework.stereotype.Repository;
 
 @Repository

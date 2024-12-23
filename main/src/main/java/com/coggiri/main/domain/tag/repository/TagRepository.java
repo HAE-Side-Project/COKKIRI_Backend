@@ -1,6 +1,6 @@
 package com.coggiri.main.domain.tag.repository;
 
-import com.coggiri.main.mvc.domain.entity.Tag;
+import com.coggiri.main.domain.tag.model.entity.Tag;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

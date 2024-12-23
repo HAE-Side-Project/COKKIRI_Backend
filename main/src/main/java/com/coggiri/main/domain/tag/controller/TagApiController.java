@@ -1,6 +1,6 @@
 package com.coggiri.main.domain.tag.controller;
 
-import com.coggiri.main.customEnums.TagType;
+import com.coggiri.main.commons.Enums.TagType;
 import com.coggiri.main.domain.tag.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
