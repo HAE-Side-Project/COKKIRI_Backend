@@ -1,10 +1,8 @@
-package com.coggiri.main.mvc.repository;
+package com.coggiri.main.domain.tag.repository;
 
 import com.coggiri.main.mvc.domain.entity.Tag;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 
 @Repository
 public interface TagRepository {

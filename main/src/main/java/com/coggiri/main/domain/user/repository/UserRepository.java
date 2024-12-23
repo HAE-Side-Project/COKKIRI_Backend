@@ -1,4 +1,4 @@
-package com.coggiri.main.mvc.repository;
+package com.coggiri.main.domain.user.repository;
 
 import com.coggiri.main.mvc.domain.entity.User;
 import com.coggiri.main.mvc.domain.entity.UserGroupRole;
