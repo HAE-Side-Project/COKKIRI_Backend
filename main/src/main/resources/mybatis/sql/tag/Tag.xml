@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.coggiri.main.domain.tag.repository.TagRepository">
 
-    <insert id="addGroupTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
+    <insert id="addGroupTag" parameterType="com.coggiri.main.domain.tag.model.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
         INSERT INTO group_tag(group_id,tag_name)
         Values
         <foreach item="tagName" collection="tags.tagNames" separator=",">
@@ -13,7 +13,7 @@
         </foreach>
     </insert>
 
-    <insert id="addTaskTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
+    <insert id="addTaskTag" parameterType="com.coggiri.main.domain.tag.model.entity.Tag" useGeneratedKeys="true" keyColumn="tag_id" keyProperty="tags.tagId">
         INSERT INTO task_tag(task_id,tag_name)
         Values
         <foreach item="tag" collection="tags.tagNames" separator=",">
@@ -36,7 +36,7 @@
         WHERE task_id = #{taskId}
     </select>
 
-    <delete id="deleteGroupTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
+    <delete id="deleteGroupTag" parameterType="com.coggiri.main.domain.tag.model.entity.Tag">
         delete from group_tag
         WHERE tag_name IN
         <foreach item="tagName"  collection="tags.tagNames" open="(" separator="," close=")">
@@ -44,7 +44,7 @@
         </foreach>
     </delete>
 
-    <delete id="deleteTaskTag" parameterType="com.coggiri.main.mvc.domain.entity.Tag">
+    <delete id="deleteTaskTag" parameterType="com.coggiri.main.domain.tag.model.entity.Tag">
         delete from task_tag
         WHERE tag_name IN
         <foreach item="tagName"  collection="tags.tagNames" open="(" separator="," close=")">

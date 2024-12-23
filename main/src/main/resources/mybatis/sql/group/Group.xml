@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.coggiri.main.domain.group.repository.GroupRepository">
-    <insert id="createGroup" parameterType="com.coggiri.main.mvc.domain.entity.Group" useGeneratedKeys="true" keyProperty="groupId" keyColumn="group_id">
+    <insert id="createGroup" parameterType="com.coggiri.main.domain.group.model.entity.Group" useGeneratedKeys="true" keyProperty="groupId" keyColumn="group_id">
         INSERT INTO groups(group_category,group_name,group_intro,group_rule,group_condition,group_number,thumbnail_path)
         Values(
             #{groupCategory},
@@ -18,7 +18,7 @@
         select count(*) from groups;
     </select>
 
-    <select id="getGroupList" parameterType="map" resultType="com.coggiri.main.mvc.domain.dto.GroupInfoDTO">
+    <select id="getGroupList" parameterType="map" resultType="com.coggiri.main.domain.group.model.dto.GroupInfoDTO">
         select
             group_id as groupId,
             group_category as groupCategory,
@@ -37,7 +37,7 @@
         LIMIT #{page} OFFSET #{offset}
     </select>
 
-    <select id="getGroup" parameterType="Integer" resultType="com.coggiri.main.mvc.domain.dto.GroupInfoDTO">
+    <select id="getGroup" parameterType="Integer" resultType="com.coggiri.main.domain.group.model.dto.GroupInfoDTO">
         select
             group_id as groupId,
             group_category as groupCategory,

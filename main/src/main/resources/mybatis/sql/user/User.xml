@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.coggiri.main.domain.user.repository.UserRepository">
-    <insert id="register" parameterType="com.coggiri.main.mvc.domain.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="register" parameterType="com.coggiri.main.domain.user.model.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO user(user_id,password,user_name,email)
         Values(
             #{userId},
@@ -15,11 +15,11 @@
         WHERE id = #{userId}
     </delete>
 
-    <update id="changePassword" parameterType="com.coggiri.main.mvc.domain.entity.User">
+    <update id="changePassword" parameterType="com.coggiri.main.domain.user.model.entity.User">
         UPDATE user SET password=#{password} where id = #{id}
     </update>
 
-    <insert id="addUserRole" parameterType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
+    <insert id="addUserRole" parameterType="com.coggiri.main.domain.user.model.entity.UserGroupRole">
         INSERT INTO user_group_role(user_id,group_id,role)
         Values(
             #{userId},
@@ -33,25 +33,25 @@
         where group_id = #{groupId}
     </delete>
 
-    <select id="findByUsername" resultType="com.coggiri.main.mvc.domain.entity.User">
+    <select id="findByUsername" resultType="com.coggiri.main.domain.user.model.entity.User">
         SELECT id,user_id,password,user_name,email
         FROM user
         WHERE user_id = #{userId}
     </select>
 
-    <select id="findByEmail" resultType="com.coggiri.main.mvc.domain.entity.User">
+    <select id="findByEmail" resultType="com.coggiri.main.domain.user.model.entity.User">
         SELECT id,user_id,password,user_name,email
         FROM user
         WHERE email = #{email}
     </select>
 
-    <select id="findGroupRolesByUserId" resultType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
+    <select id="findGroupRolesByUserId" resultType="com.coggiri.main.domain.user.model.entity.UserGroupRole">
         SELECT user_id as userId, group_id as groupId, role
         FROM user_group_role
         WHERE user_id = #{userId}
     </select>
 
-    <select id="findGroupRoleByUserId" resultType="com.coggiri.main.mvc.domain.entity.UserGroupRole">
+    <select id="findGroupRoleByUserId" resultType="com.coggiri.main.domain.user.model.entity.UserGroupRole">
         SELECT user_id as userId, group_id as groupId, role
         FROM user_group_role
         WHERE user_id = #{userId} AND group_id = #{groupId}
