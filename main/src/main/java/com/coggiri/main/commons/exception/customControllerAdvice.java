@@ -1,7 +1,7 @@
 package com.coggiri.main.commons.exception;
 
 import com.coggiri.main.commons.Enums.ErrorType;
-import com.coggiri.main.commons.response.customResponse;
+import com.coggiri.main.commons.response.CustomResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -26,7 +26,7 @@ public class customControllerAdvice {
      * 400 Bad request
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<customResponse<?>> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e){
+    public ResponseEntity<CustomResponse<?>> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e){
         Errors errors = e.getBindingResult();
         Map<String, String> validationDetails = new HashMap<>();
 
@@ -35,27 +35,27 @@ public class customControllerAdvice {
             validationDetails.put(validKeyName,error.getDefaultMessage());
         }
 
-        return new ResponseEntity<>(customResponse.error(ErrorType.REQUEST_VALIDATION,validationDetails),e.getStatusCode());
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.REQUEST_VALIDATION,validationDetails),e.getStatusCode());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<customResponse<?>> handlerMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e){
-        return new ResponseEntity<>(customResponse.error(ErrorType.INVALID_TYPE), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<CustomResponse<?>> handlerMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e){
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.INVALID_TYPE), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<customResponse<?>> handlerMissingRequestHeaderException(final MissingRequestHeaderException e){
-        return new ResponseEntity<>(customResponse.error(ErrorType.INVALID_MISSING_HEADER),e.getStatusCode());
+    public ResponseEntity<CustomResponse<?>> handlerMissingRequestHeaderException(final MissingRequestHeaderException e){
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.INVALID_MISSING_HEADER),e.getStatusCode());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<customResponse<?>> handlerHttpMessageNotReadableException(final  HttpMessageNotReadableException e){
-        return new ResponseEntity<>(customResponse.error(ErrorType.INVALID_HTTP_REQUEST), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<CustomResponse<?>> handlerHttpMessageNotReadableException(final  HttpMessageNotReadableException e){
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.INVALID_HTTP_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<customResponse<?>> handlerHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException e){
-        return new ResponseEntity<>(customResponse.error(ErrorType.METHOD_NOT_ALLOWED),e.getStatusCode());
+    public ResponseEntity<CustomResponse<?>> handlerHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException e){
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.METHOD_NOT_ALLOWED),e.getStatusCode());
     }
 
     /*
@@ -63,23 +63,23 @@ public class customControllerAdvice {
      */
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<customResponse<?>> handlerException(final Exception e, final HttpServletRequest request) throws IOException{
-        return new ResponseEntity<>(customResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<CustomResponse<?>> handlerException(final Exception e, final HttpServletRequest request) throws IOException{
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<customResponse<?>> handlerIllegalArgumentException(final IllegalArgumentException e, final  HttpServletRequest request){
-        return new ResponseEntity<>(customResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<CustomResponse<?>> handlerIllegalArgumentException(final IllegalArgumentException e, final  HttpServletRequest request){
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<customResponse<?>> handlerIOException(final IOException e, final HttpServletRequest request) {
-        return new ResponseEntity<>(customResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<CustomResponse<?>> handlerIOException(final IOException e, final HttpServletRequest request) {
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<customResponse<?>> handlerRuntimeException(final RuntimeException e,final HttpServletRequest request){
-        return new ResponseEntity<>(customResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<CustomResponse<?>> handlerRuntimeException(final RuntimeException e, final HttpServletRequest request){
+        return new ResponseEntity<>(CustomResponse.error(ErrorType.INTERNAL_SERVER),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -87,7 +87,7 @@ public class customControllerAdvice {
      */
 
     @ExceptionHandler(customException.class)
-    public ResponseEntity<customResponse<?>> handlerCustomException(customException e){
-        return new ResponseEntity<>(customResponse.error(e.getErrorType()), HttpStatusCode.valueOf(e.getHttpStatus()));
+    public ResponseEntity<CustomResponse<?>> handlerCustomException(customException e){
+        return new ResponseEntity<>(CustomResponse.error(e.getErrorType()), HttpStatusCode.valueOf(e.getHttpStatus()));
     }
 }

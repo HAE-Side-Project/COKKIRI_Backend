@@ -2,9 +2,9 @@ package com.coggiri.main.domain.group.service;
 
 import com.coggiri.main.commons.Enums.Role;
 import com.coggiri.main.commons.Enums.TagType;
-import com.coggiri.main.domain.group.model.dto.GroupInfoDTO;
-import com.coggiri.main.domain.group.model.dto.GroupRegisterDTO;
-import com.coggiri.main.domain.task.model.dto.SearchInFoDTO;
+import com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO;
+import com.coggiri.main.domain.group.model.dto.request.GroupRegisterDTO;
+import com.coggiri.main.domain.task.model.dto.request.SearchInFoDTO;
 import com.coggiri.main.domain.group.model.entity.Group;
 import com.coggiri.main.domain.user.model.entity.User;
 import com.coggiri.main.domain.user.model.entity.UserGroupRole;

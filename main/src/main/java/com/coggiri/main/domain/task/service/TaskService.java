@@ -2,8 +2,8 @@ package com.coggiri.main.domain.task.service;
 
 import com.coggiri.main.commons.Enums.TagType;
 import com.coggiri.main.domain.tag.service.TagService;
-import com.coggiri.main.domain.task.model.dto.TaskRegisterDTO;
-import com.coggiri.main.domain.task.model.dto.TaskInfoDTO;
+import com.coggiri.main.domain.task.model.dto.request.TaskRegisterDTO;
+import com.coggiri.main.domain.task.model.dto.request.TaskInfoDTO;
 import com.coggiri.main.domain.task.model.entity.Task;
 import com.coggiri.main.domain.task.repository.TaskRepository;
 import org.slf4j.Logger;

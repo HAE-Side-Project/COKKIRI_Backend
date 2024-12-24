@@ -1,7 +1,7 @@
 package com.coggiri.main.domain.user.service;
 
 import com.coggiri.main.commons.Enums.EmailErrorStatus;
-import com.coggiri.main.domain.user.model.dto.VerificationInfo;
+import com.coggiri.main.domain.user.model.dto.request.VerificationInfo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

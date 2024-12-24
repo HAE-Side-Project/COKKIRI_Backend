@@ -1,6 +1,6 @@
 package com.coggiri.main.domain.task.model.entity;
 
-import com.coggiri.main.domain.task.model.dto.TaskRegisterDTO;
+import com.coggiri.main.domain.task.model.dto.request.TaskRegisterDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

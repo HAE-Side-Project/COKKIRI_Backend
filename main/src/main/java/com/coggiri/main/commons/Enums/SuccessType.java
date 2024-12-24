@@ -11,8 +11,8 @@ public enum SuccessType {
     /*
     *  200 ok (2000 ~ 2099)
     * */
-    OK(HttpStatus.OK,2000,"성공");
-
+    OK(HttpStatus.OK,2000,"성공"),
+    SUCCESS_USER_LOGIN(HttpStatus.OK,2001,"로그인에 성공했습니다.");
     /*
     *  201 create (2100 ~ 2199)
     * */

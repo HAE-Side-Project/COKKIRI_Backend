@@ -18,6 +18,7 @@ public enum ErrorType {
     INVALID_HTTP_REQUEST(HttpStatus.BAD_REQUEST, 4004, "허용되지 않는 문자열이 입력되었습니다."),
     INVALID_BOARD_DELETE_REQUEST(HttpStatus.BAD_REQUEST, 4005, "존재하지 않는 게시글 삭제 요청 입니다."),
     INVALID_BOARD_CREATE_REQUEST(HttpStatus.BAD_REQUEST, 4006, "게시글 생성에 실패했습니다."),
+    INVALID_USER_LOGIN_REQUEST(HttpStatus.BAD_REQUEST,4007,"존재하지 않는 유저입니다."),
     /*
     *  401 Unauthorized (4100 ~ 4199)
     */

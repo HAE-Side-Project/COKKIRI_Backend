@@ -1,8 +1,11 @@
 package com.coggiri.main.domain.user.service;
 
+import com.coggiri.main.commons.Enums.ErrorType;
 import com.coggiri.main.commons.Enums.Role;
-import com.coggiri.main.domain.user.model.dto.UserDTO;
-import com.coggiri.main.domain.user.model.dto.UserLoginDTO;
+import com.coggiri.main.commons.exception.customException;
+import com.coggiri.main.domain.user.model.dto.request.UserDTO;
+import com.coggiri.main.domain.user.model.dto.request.UserLoginDTO;
+import com.coggiri.main.domain.user.model.dto.response.UserInfoResponse;
 import com.coggiri.main.domain.user.model.entity.JwtToken;
 import com.coggiri.main.domain.user.model.entity.User;
 import com.coggiri.main.domain.user.model.entity.UserGroupRole;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,12 +79,17 @@ public class UserService{
         userRepository.deleteUserRoleByGroupId(groupId);
     }
 
-    public JwtToken login(String userId, String password){
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId,password);
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-
-        return jwtToken;
+    public UserInfoResponse login(String userId, String password){
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+            return UserInfoResponse.of(jwtToken);
+        }catch (IllegalArgumentException e){
+            throw new customException(ErrorType.INVALID_USER_LOGIN_REQUEST);
+        }catch (AuthenticationException e){
+            throw new customException(ErrorType.UNAUTHORIZED);
+        }
     }
 
     public void changePassword(UserLoginDTO userLoginDTO){

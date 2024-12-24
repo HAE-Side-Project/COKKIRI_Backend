@@ -1,18 +1,23 @@
 package com.coggiri.main.domain.user.controller;
 
-import com.coggiri.main.domain.user.model.dto.UserLoginDTO;
-import com.coggiri.main.domain.user.model.dto.UserDTO;
+import com.coggiri.main.commons.Enums.SuccessType;
+import com.coggiri.main.commons.response.CustomResponse;
+import com.coggiri.main.domain.user.model.dto.request.UserLoginDTO;
+import com.coggiri.main.domain.user.model.dto.request.UserDTO;
 import com.coggiri.main.domain.user.model.entity.JwtToken;
 import com.coggiri.main.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,76 +37,112 @@ public class UserApiController {
         this.userService = userService;
     }
 
-    @Operation(summary = "로그인", description = "로그인 기능 API",
-            responses= {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "로그인 및 JWT 토큰 반환",
-                        content = @Content(
-                                schemaProperties = {
-                                        @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                                        @SchemaProperty(name = "JwtToken", schema = @Schema(implementation = JwtToken.class,description = "JWT 토큰")),
-                                        @SchemaProperty(name = "userId", schema = @Schema(type = "string",description = "유저 아이디" ,example = "user"))
-                                }
-                        )
-                )},
+    @Operation(
+            summary = "로그인",
+            description = "로그인 기능 API",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = {
-                        @Content(
-                                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                schemaProperties = {
-                                        @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "아이디",example = "user")),
-                                        @SchemaProperty(name = "password", schema = @Schema(type = "string", description = "비밀번호",example = "1234"))
-                                }
-                        )
-                    }
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserLoginDTO.class)
+                    )
             )
     )
-    @PostMapping("login")
-    public ResponseEntity<Map<String,Object>> login(@RequestBody UserLoginDTO userLoginDTO){
-        Map<String, Object> response = new HashMap<>();
-        try {
-            JwtToken jwtToken = userService.login(userLoginDTO.getUserId(), userLoginDTO.getPassword());
-            log.debug("request username = {}, password = {}", userLoginDTO.getUserId(), userLoginDTO.getPassword());
-            log.debug("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
-            response.put("success",true);
-            response.put("JwtToken",jwtToken);
-            response.put("userId", userLoginDTO.getUserId());
-        }catch (Exception e){
-            response.put("success",false);
-            response.put("message",e.getMessage());
-        }
-
-        return ResponseEntity.ok(response);
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "2001",
+                    description = "로그인 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 200,
+                                        "code": 2001,
+                                        "message": "로그인 성공",
+                                        "data": {
+                                            "jwtToken": "eyJhbGciOiJIUzI1NiJ9...",
+                                            "userId": "user123"
+                                        }
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "4007",
+                    description = "잘못된 요청",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 400,
+                                        "code": 4007,
+                                        "message": "잘못된 요청입니다."
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "4100",
+                    description = "존재하지 않는 유저",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 400,
+                                        "code": 4100,
+                                        "message": "존재하지 않는 유저입니다"
+                                    }
+                                    """
+                            )
+                    )
+            )
+    })
+    @PostMapping("/login")
+    public ResponseEntity<CustomResponse<?>> login(@RequestBody UserLoginDTO userLoginDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_USER_LOGIN,userService.login(userLoginDTO.getUserId(),userLoginDTO.getPassword())));
     }
 
     @Operation(summary = "회원가입",description = "회원가입 기능 API",
-            responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "회원가입 성공 여부 반환",
-                        content = @Content(
-                                schemaProperties = {
-                                        @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
-                                        @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "오류 or 성공 메세지"))
-                                }
-                        )
-                )},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schemaProperties = {
-                                            @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "아이디",example = "abcd1234")),
-                                            @SchemaProperty(name = "password", schema = @Schema(type = "string", description = "비밀번호",example = "1234")),
-                                            @SchemaProperty(name = "userName", schema = @Schema(type = "string", description = "이름",example = "홍길동")),
-                                            @SchemaProperty(name = "email", schema = @Schema(type = "string", description = "이메일",example = "example@naver.com")),
-                                    }
+                                    schema = @Schema(implementation = UserDTO.class)
                             )
                     }
             )
     )
-    @PostMapping("register")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "",
+                    description = "회원가입 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 200,
+                                        "code": 2001,
+                                        "message": "로그인 성공",
+                                        "data": {
+                                            "jwtToken": "eyJhbGciOiJIUzI1NiJ9...",
+                                            "userId": "user123"
+                                        }
+                                    }
+                                    """
+                            )
+                    )
+            )
+    })
+    @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> register(@RequestBody UserDTO userInfo) {
         Map<String, Object> response = new HashMap<>();
 

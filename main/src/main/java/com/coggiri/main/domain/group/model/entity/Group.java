@@ -1,6 +1,6 @@
 package com.coggiri.main.domain.group.model.entity;
 
-import com.coggiri.main.domain.group.model.dto.GroupRegisterDTO;
+import com.coggiri.main.domain.group.model.dto.request.GroupRegisterDTO;
 import lombok.Getter;
 
 @Getter
