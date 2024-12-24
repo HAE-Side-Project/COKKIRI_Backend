@@ -18,7 +18,7 @@
         select count(*) from groups;
     </select>
 
-    <select id="getGroupList" parameterType="map" resultType="com.coggiri.main.domain.group.model.dto.GroupInfoDTO">
+    <select id="getGroupList" parameterType="map" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">
         select
             group_id as groupId,
             group_category as groupCategory,
@@ -37,7 +37,7 @@
         LIMIT #{page} OFFSET #{offset}
     </select>
 
-    <select id="getGroup" parameterType="Integer" resultType="com.coggiri.main.domain.group.model.dto.GroupInfoDTO">
+    <select id="getGroup" parameterType="Integer" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">
         select
             group_id as groupId,
             group_category as groupCategory,

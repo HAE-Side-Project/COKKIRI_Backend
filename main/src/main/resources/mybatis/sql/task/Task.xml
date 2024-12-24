@@ -13,7 +13,7 @@
         );
     </insert>
 
-    <insert id="addTaskRole" parameterType="com.coggiri.main.domain.task.model.dto.TaskInfoDTO">
+    <insert id="addTaskRole" parameterType="com.coggiri.main.domain.task.model.dto.request.TaskInfoDTO">
         INSERT INTO task_user_group_role(task_id,user_id,group_id)
         Values
             <foreach item="uId" collection="userId" separator=",">
