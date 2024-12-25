@@ -1,6 +1,7 @@
 package com.coggiri.main.domain.user.model.entity;
 
 import com.coggiri.main.commons.Enums.Role;
+import com.coggiri.main.domain.user.model.dto.request.UserCreateDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +36,14 @@ public class User implements UserDetails {
         this.userName = userName;
         this.email = email;
         this.roles = roles;
+    }
+
+    public User(UserCreateDTO registerDTO, String encodedPassword){
+        this.userId = registerDTO.getUserId();
+        this.password = encodedPassword;
+        this.userName = registerDTO.getUserName();
+        this.email = registerDTO.getEmail();
+        this.roles = new ArrayList<>();
     }
 
     public Role getRoleForGroup(Integer groupId) {

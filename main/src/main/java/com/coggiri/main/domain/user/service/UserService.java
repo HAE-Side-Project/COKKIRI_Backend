@@ -3,14 +3,16 @@ package com.coggiri.main.domain.user.service;
 import com.coggiri.main.commons.Enums.ErrorType;
 import com.coggiri.main.commons.Enums.Role;
 import com.coggiri.main.commons.exception.customException;
-import com.coggiri.main.domain.user.model.dto.request.UserDTO;
 import com.coggiri.main.domain.user.model.dto.request.UserLoginDTO;
+import com.coggiri.main.domain.user.model.dto.request.UserCreateDTO;
 import com.coggiri.main.domain.user.model.dto.response.UserInfoResponse;
 import com.coggiri.main.domain.user.model.entity.JwtToken;
 import com.coggiri.main.domain.user.model.entity.User;
 import com.coggiri.main.domain.user.model.entity.UserGroupRole;
 import com.coggiri.main.domain.user.repository.UserRepository;
 import com.coggiri.main.commons.jwtUtils.JwtTokenProvider;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -45,29 +45,30 @@ public class UserService{
     }
 
     @Transactional
-    public void register(UserDTO userInfo){
-        if(userRepository.findByUsername(userInfo.getUserId()).isPresent()){
-            throw new IllegalArgumentException("이미 사용중인 사용자 아이디입니다.");
+    public void create(UserCreateDTO userCreateDTO){
+        if(userRepository.findByUsername(userCreateDTO.getUserId()).isPresent()){
+            throw new customException(ErrorType.INVALID_USER_CREATE_ID);
         }
 
-        String encodePassword = passwordEncoder.encode(userInfo.getPassword());
-        List<UserGroupRole> roles = new ArrayList<>();
+        String encodePassword = passwordEncoder.encode(userCreateDTO.getPassword());
 
-        User user = userInfo.toUser(encodePassword,roles);
+        User user = new User(userCreateDTO,encodePassword);
 
         if(userRepository.register(user) == 0){
-            throw new IllegalArgumentException("회원 정보 데이터베이스 저장 실패");
+            throw new customException(ErrorType.INTERNAL_SERVER);
         }
 
         if(addUserRole(new UserGroupRole(user.getId(),1, Role.USER.name())) == 0){
-            throw new IllegalArgumentException("회원 권한 데이터베이스 저장 실패");
+            throw new customException(ErrorType.INTERNAL_SERVER);
         }
     }
 
-    public void deleteUser(int userId){
-        log.info("userId: " + userId);
-        if(userRepository.deleteUser(userId) < 1){
-            throw new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다.");
+    public void delete(String token){
+        Claims claims = jwtTokenProvider.parseClaims(token);
+        Long userId = claims.get("userId",Long.class);
+
+        if(userRepository.delete(userId) < 1){
+            throw new customException(ErrorType.NOT_FOUND_USER);
         }
     }
 
@@ -92,7 +93,10 @@ public class UserService{
         }
     }
 
-    public void changePassword(UserLoginDTO userLoginDTO){
+    public void changePassword(UserLoginDTO userLoginDTO,String token){
+        Claims claims = jwtTokenProvider.parseClaims(token);
+        Long userId = claims.get("userId",Long.class);
+
         User user = findUserById(userLoginDTO.getUserId()).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다. "));
         try{

@@ -18,12 +18,15 @@ public enum ErrorType {
     INVALID_HTTP_REQUEST(HttpStatus.BAD_REQUEST, 4004, "허용되지 않는 문자열이 입력되었습니다."),
     INVALID_BOARD_DELETE_REQUEST(HttpStatus.BAD_REQUEST, 4005, "존재하지 않는 게시글 삭제 요청 입니다."),
     INVALID_BOARD_CREATE_REQUEST(HttpStatus.BAD_REQUEST, 4006, "게시글 생성에 실패했습니다."),
-    INVALID_USER_LOGIN_REQUEST(HttpStatus.BAD_REQUEST,4007,"존재하지 않는 유저입니다."),
+    INVALID_USER_LOGIN_REQUEST(HttpStatus.BAD_REQUEST,4007,"존재하지 않는 유저의 로그인 요청입니다."),
+    INVALID_USER_CREATE_ID(HttpStatus.BAD_REQUEST,4008,"이미 존재하는 사용자 아이디입니다."),
+    INVALID_JWT_REQUEST(HttpStatus.BAD_REQUEST,4009,"토큰이 존재하지 않습니다"),
     /*
     *  401 Unauthorized (4100 ~ 4199)
     */
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, 4100, "인증되지 않았습니다."),
     ACCESS_DENIED(HttpStatus.UNAUTHORIZED, 4109, "알 수 없는 이유로 요청이 거절되었습니다."),
+
     /*
      * 403 Forbidden (4300 ~ 4399)
      */

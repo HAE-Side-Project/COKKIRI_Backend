@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository {
     int register(User userRegisterDTO);
-    int deleteUser(int userId);
+    int delete(Long userId);
     int addUserRole(UserGroupRole userGroupRole);
     void deleteUserRoleByGroupId(int groupId);
     int changePassword(User user);

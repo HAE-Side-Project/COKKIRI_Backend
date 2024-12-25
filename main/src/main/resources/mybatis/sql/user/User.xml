@@ -10,7 +10,7 @@
             #{email});
     </insert>
 
-    <delete id="deleteUser" parameterType="int">
+    <delete id="delete" parameterType="Long">
         DELETE from user
         WHERE id = #{userId}
     </delete>
