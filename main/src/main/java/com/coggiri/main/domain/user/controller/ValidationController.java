@@ -1,12 +1,10 @@
 package com.coggiri.main.domain.user.controller;
 
-import com.coggiri.main.commons.Enums.EmailErrorStatus;
 import com.coggiri.main.commons.Enums.ErrorType;
 import com.coggiri.main.commons.Enums.SuccessType;
 import com.coggiri.main.commons.exception.customException;
 import com.coggiri.main.commons.response.CustomResponse;
 import com.coggiri.main.domain.user.model.dto.request.MailDTO;
-import com.coggiri.main.domain.user.model.dto.request.VerificationInfo;
 import com.coggiri.main.domain.user.service.MailService;
 
 import com.coggiri.main.domain.user.service.UserService;

@@ -1,6 +1,5 @@
 package com.coggiri.main.domain.user.service;
 
-import com.coggiri.main.commons.Enums.EmailErrorStatus;
 import com.coggiri.main.commons.Enums.ErrorType;
 import com.coggiri.main.commons.exception.customException;
 import com.coggiri.main.domain.user.model.dto.request.VerificationInfo;
