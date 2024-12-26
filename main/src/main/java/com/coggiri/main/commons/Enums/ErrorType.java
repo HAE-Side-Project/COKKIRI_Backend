@@ -26,6 +26,7 @@ public enum ErrorType {
     INVALID_EMAIL_ACCESS_FREQUENT(HttpStatus.BAD_REQUEST,4012,"비정상적으로 잦은 접근 시도입니다."),
     INVALID_EMAIL_AUTH_CODE_DIFFERENT(HttpStatus.BAD_REQUEST,4013,"발급된 인증번호와 다릅니다."),
     INVALID_ID_DUPLICATE(HttpStatus.BAD_REQUEST,4014,"이미 존재하는 아이디입니다."),
+    INVALID_FILE_NOT_EXTENSION(HttpStatus.BAD_REQUEST,4015,"허용되지 않은 확장자입니다."),
     /*
     *  401 Unauthorized (4100 ~ 4199)
     */
@@ -52,8 +53,8 @@ public enum ErrorType {
      * 500 Internal_SERVER (5000 ~ 5099)
      */
     INTERNAL_SERVER(HttpStatus.INTERNAL_SERVER_ERROR, 5000, "알 수 없는 서버 에러가 발생했습니다"),
-    INTERNAL_MAIL_SEND(HttpStatus.INTERNAL_SERVER_ERROR, 5001,"인증 메일을 전송하는데 에러가 발생했습니다.");
-
+    INTERNAL_MAIL_SEND(HttpStatus.INTERNAL_SERVER_ERROR, 5001,"인증 메일을 전송 에러가 발생했습니다."),
+    INTERNAL_GROUP_CREATE(HttpStatus.INTERNAL_SERVER_ERROR,5002,"그룹 생성 에러가 발생했습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

@@ -21,7 +21,8 @@ public enum SuccessType {
     /*
     *  201 create (2100 ~ 2199)
     * */
-    SUCCESS_USER_CREATE(HttpStatus.CREATED,2100,"회원가입에 성공했습니다.");
+    SUCCESS_USER_CREATE(HttpStatus.CREATED,2100,"회원가입에 성공했습니다."),
+    SUCCESS_GROUP_CREATE(HttpStatus.CREATED,2101,"그룹 생성에 성공했습니다.");
     /**
      * 204 no Content (2400 ~ 2499)
      */

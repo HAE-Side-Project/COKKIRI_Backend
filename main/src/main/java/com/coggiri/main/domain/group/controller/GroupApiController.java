@@ -1,22 +1,25 @@
 package com.coggiri.main.domain.group.controller;
 
 import com.coggiri.main.commons.Enums.Role;
+import com.coggiri.main.commons.Enums.SuccessType;
 import com.coggiri.main.commons.jwtUtils.RequireGroupRole;
+import com.coggiri.main.commons.response.CustomResponse;
 import com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO;
 import com.coggiri.main.domain.group.model.dto.request.GroupRegisterDTO;
 import com.coggiri.main.domain.task.model.dto.request.SearchInFoDTO;
 import com.coggiri.main.domain.group.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Encoding;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.*;
 //import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,49 +31,62 @@ import java.util.Map;
 
 @Tag(name = "그룹 기능",description = "그룹 관련 API")
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/group")
 public class GroupApiController {
-
-    @Autowired
-    private GroupService groupService;
+    private final GroupService groupService;
 
     @Operation(summary = "그룹생성", description = "그룹 생성 기능 API",
-            responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "그룹생성 API",
-                        content = @Content(
-                                schemaProperties = {
-                                        @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                                        @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환"))
-                                }
-                        )
-                )
-            },
             parameters = {
-                    @Parameter(name = "userId",description = "아이디",example = "asdf12344"),
                     @Parameter(name = "groupInfo",description = "그룹 정보",schema = @Schema(implementation = GroupRegisterDTO.class)),
                     @Parameter(name = "image",description = "이미지파일",schema = @Schema(implementation = MultipartFile.class))
             }
     )
-    @RequestBody(content = @Content(encoding = @Encoding(name = "groupInfo",contentType = MediaType.APPLICATION_JSON_VALUE)))
-    @PostMapping(value = "/createGroup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String,Object>> createGroup( @RequestPart(value = "userId",required = true) String userId,
-                                                           @RequestPart(value = "groupInfo",required = true) GroupRegisterDTO groupRegisterDTO,
-                                                          @RequestPart(value = "image",required = false) MultipartFile image){
-        Map<String,Object> response = new HashMap<>();
-        try{
-            groupService.createGroup(userId,groupRegisterDTO,image);
-            response.put("success",true);
-            response.put("message","그룹 생성 완료");
-        }catch (Exception e){
-            response.put("success",false);
-            response.put("message",e.getMessage());
-        }
-
-        return ResponseEntity.ok(response);
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "2101",
+                    description = "그룹 생성 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 201,
+                                        "code": 2101,
+                                        "message": "그룹 생성에 성공했습니다."
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "5000",
+                    description = "그룹 생성 실패",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 500,
+                                        "code": 5002,
+                                        "message": "그룹 생성 에러가 발생했습니다."
+                                    }
+                                    """
+                            )
+                    )
+            )
+    })
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CustomResponse<?>> createGroup(@Parameter(description = "그룹 정보") @RequestPart(value = "groupInfo",required = true) GroupRegisterDTO groupRegisterDTO,
+                                                      @Parameter(description = "이미지파일") @RequestPart(value = "image",required = false) MultipartFile image,
+                                                         HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        groupService.createGroup(groupRegisterDTO,image,token);
+        return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_GROUP_CREATE));
     }
-    //수정 필요
+
     @Operation(summary = "그룹 리스트 정보 리스트", description = "그룹 정보 리스트 반환 API",
             responses = {
                     @ApiResponse(

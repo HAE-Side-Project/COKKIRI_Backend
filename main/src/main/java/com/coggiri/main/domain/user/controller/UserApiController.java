@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,11 @@ import java.util.Map;
 
 @Tag(name = "사용자 로그인", description = "로그인 관련 API")
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/user")
 public class UserApiController {
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    private UserService userService;
-
-    @Autowired
-    UserApiController(UserService userService){
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     @Operation(
             summary = "로그인",

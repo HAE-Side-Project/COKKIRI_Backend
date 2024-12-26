@@ -13,6 +13,7 @@ import com.coggiri.main.domain.user.repository.UserRepository;
 import com.coggiri.main.commons.jwtUtils.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Transactional
+@AllArgsConstructor
 @Service
 public class UserService{
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -34,15 +36,6 @@ public class UserService{
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    UserService(UserRepository userRepository,AuthenticationManagerBuilder authenticationManagerBuilder,
-                JwtTokenProvider jwtTokenProvider,PasswordEncoder passwordEncoder){
-        this.userRepository = userRepository;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Transactional
     public void create(UserCreateDTO userCreateDTO){

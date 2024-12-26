@@ -6,7 +6,7 @@ import lombok.Getter;
 @Schema
 @Getter
 public class GroupRegisterDTO {
-    @Schema(description = "그룹 종류",defaultValue = "0",allowableValues = {"0","1"},example = "0")
+    @Schema(description = "그룹 종류 0: 스터디,1: 프로젝트",defaultValue = "0",allowableValues = {"0","1"},example = "0")
     private int groupCategory;
     @Schema(description = "그룹 이름",example = "그룹 이름")
     private String groupName;

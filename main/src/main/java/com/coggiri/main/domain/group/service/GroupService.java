@@ -1,7 +1,9 @@
 package com.coggiri.main.domain.group.service;
 
+import com.coggiri.main.commons.Enums.ErrorType;
 import com.coggiri.main.commons.Enums.Role;
 import com.coggiri.main.commons.Enums.TagType;
+import com.coggiri.main.commons.exception.customException;
 import com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO;
 import com.coggiri.main.domain.group.model.dto.request.GroupRegisterDTO;
 import com.coggiri.main.domain.task.model.dto.request.SearchInFoDTO;
@@ -11,9 +13,10 @@ import com.coggiri.main.domain.user.model.entity.UserGroupRole;
 import com.coggiri.main.domain.group.repository.GroupRepository;
 import com.coggiri.main.domain.tag.service.TagService;
 import com.coggiri.main.domain.user.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +29,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
 public class GroupService {
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    @Autowired
-    private GroupRepository groupRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TagService tagService;
+    private final GroupRepository groupRepository;
+    private final UserService userService;
+    private final TagService tagService;
 
     @Value("${file.upload.directory}")
     private String uploadDirectory;
@@ -89,16 +90,16 @@ public class GroupService {
     }
 
     @Transactional
-    public void createGroup(String userId,GroupRegisterDTO groupRegisterDTO, MultipartFile image){
-        User user = userService.findUserById(userId).orElseThrow(() ->
-                new IllegalArgumentException("사용자를 찾을 수 없습니다"));
+    public void createGroup(GroupRegisterDTO groupRegisterDTO, MultipartFile image,String token){
+        User user = userService.findUserById(token).orElseThrow(() ->
+                new customException(ErrorType.NOT_FOUND_USER));
 
         String fileName = "";
         if(!image.isEmpty()){
             String fileExtension = getFileExtension(image.getOriginalFilename());
 
             if(!isValidImageExtension(fileExtension)){
-                throw new IllegalArgumentException("허용되지 않은 확장자입니다");
+                throw new customException(ErrorType.INVALID_FILE_NOT_EXTENSION);
             }
 
             String filePath = "";
@@ -113,15 +114,14 @@ public class GroupService {
             try {
                 saveFile(image, filePath);
             } catch (Exception e) {
-                log.info("createGroup Error: " + e.getMessage());
-                throw new RuntimeException(e.getMessage());
+                throw new customException(ErrorType.INTERNAL_GROUP_CREATE);
             }
         }
 
         Group groupInfo = new Group(groupRegisterDTO,fileName);
         // 그룹 정보 저장
         if(groupRepository.createGroup(groupInfo) == 0){
-            throw new RuntimeException("그룹 정보 저장 실패");
+            throw new customException(ErrorType.INTERNAL_GROUP_CREATE);
         }
 
         if(groupRegisterDTO.getGroupTags().length > 0) {
@@ -129,7 +129,7 @@ public class GroupService {
         }
         // 그룹 유저 롤 저장
         if (userService.addUserRole(new UserGroupRole(user.getId(), groupInfo.getGroupId(), Role.ADMIN.name())) == 0) {
-            throw new RuntimeException("그룹 권한 정보 저장 실패");
+            throw new customException(ErrorType.INTERNAL_GROUP_CREATE);
         }
     }
 
