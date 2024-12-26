@@ -143,7 +143,7 @@ public class UserApiController {
             ),
             @ApiResponse(
                     responseCode = "5000",
-                    description = "회원가입 성공",
+                    description = "회원가입 실패",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CustomResponse.class),
@@ -165,18 +165,7 @@ public class UserApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CustomResponse.success(SuccessType.SUCCESS_USER_CREATE));
     }
 
-    @Operation(summary = "회원 탈퇴", description = "회원탈퇴 API",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                content = {
-                        @Content(
-                                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                schemaProperties = {
-                                        @SchemaProperty(name = "userId", schema = @Schema(type = "string", description = "user pk",example = "1")),
-                                }
-                        )
-                }
-        )
-    )
+    @Operation(summary = "회원 탈퇴", description = "회원탈퇴 API")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "2002",
@@ -263,38 +252,97 @@ public class UserApiController {
     }
 
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API",
-        responses = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "비밀번호 변경",
-                    content = @Content(
-                            schemaProperties = {
-                                    @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                                    @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지",example = "비밀번호 변경 완료" ))
-                            }
-                    )
-            )},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schemaProperties = {
-                                            @SchemaProperty(name = "id", schema = @Schema(type = "string", description = "그룹 pk or 태스크 pk",example = "1")),
-                                            @SchemaProperty(name = "type", schema = @Schema(type = "string", description = "그룹/태스크 태그 구별",example = "GROUP/TASK"))
+                                            @SchemaProperty(name = "id", schema = @Schema(type = "string", description = "사용자 아이디",example = "user123")),
+                                            @SchemaProperty(name = "password", schema = @Schema(type = "string", description = "변경할 비밀번호",example = "12345"))
                                     }
                             )
                     }
             )
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "2002",
+                    description = "비밀번호 변경 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 200,
+                                        "code": 2003,
+                                        "message": "비밀번호 변경에 성공했습니다."
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "4100",
+                    description = "인증 오류",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 401,
+                                        "code": 4100,
+                                        "message": "인증되지 않았습니다."
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "토큰이 존재하지 않습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 400,
+                                        "code": 4009,
+                                        "message": "토큰이 존재하지 않습니다."
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "4401",
+                    description = "존재하지 않는 유저",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 404,
+                                        "code": 4401,
+                                        "message": "존재하지 않는 유저입니다."
+                                    }
+                                    """
+                            )
+                    )
+            ),
+    })
     @ResponseBody
-    @PostMapping("changePassword")
+    @PutMapping("/password/change")
     public ResponseEntity<CustomResponse<?>> changePassword(@RequestBody UserLoginDTO userLoginDTO,HttpServletRequest request){
         String token = request.getHeader("Authorization").substring(7);
 
         if(token != null){
             try{
                 userService.changePassword(userLoginDTO,token);
-                return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_USER_DELETE));
+                return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_USER_PASSWORD_CHANGE));
             }catch (JwtException e){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CustomResponse.error(ErrorType.UNAUTHORIZED));
             }
