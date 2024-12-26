@@ -97,19 +97,25 @@ public class UserService{
         Claims claims = jwtTokenProvider.parseClaims(token);
         Long userId = claims.get("userId",Long.class);
 
-        User user = findUserById(userLoginDTO.getUserId()).orElseThrow(() ->
-                new IllegalArgumentException("사용자를 찾을 수 없습니다. "));
+        User user = userRepository.findByUserId(userId).orElseThrow(() ->
+                new customException(ErrorType.NOT_FOUND_USER));
         try{
             String encodeNextPassword = passwordEncoder.encode(userLoginDTO.getPassword());
             User nextUser = new User(user.getId(),user.getUsername(),encodeNextPassword,user.getName(),user.getEmail());
             userRepository.changePassword(nextUser);
         }catch (Exception e){
-            throw new IllegalArgumentException();
+            throw new customException(ErrorType.INTERNAL_SERVER);
         }
     }
 
-    public Optional<User> findUserById(String userId){
-        return userRepository.findByUsername(userId);
+    public Optional<User> findUserById(String token){
+        Claims claims = jwtTokenProvider.parseClaims(token);
+        Long userId = claims.get("userId",Long.class);
+        return userRepository.findByUserId(userId);
+    }
+
+    public Optional<User> findUserByUserName(String userName){
+        return userRepository.findByUsername(userName);
     }
 
     public Optional<User> findUserByEmail(String email){

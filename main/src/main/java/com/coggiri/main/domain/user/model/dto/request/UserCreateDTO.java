@@ -13,8 +13,6 @@ import java.util.List;
 @Schema
 @Getter
 public class UserCreateDTO {
-    @Schema(example = "1", description = "pk")
-    private int id;
     @Schema(example = "asd1234", description = "아이디")
     private String userId;
     @Schema(example = "1234", description = "비밀번호")
@@ -23,8 +21,6 @@ public class UserCreateDTO {
     private String userName;
     @Schema(example = "sample@naver.com", description = "이메일")
     private String email;
-
-    private List<UserGroupRole> roles = new ArrayList<>();
 
     @JsonCreator
     public UserCreateDTO(
@@ -43,20 +39,12 @@ public class UserCreateDTO {
         this.password = password;
         this.userName = userName;
         this.email = email;
-        this.roles = roles;
     }
 
     public UserCreateDTO(int id, String userId, String password, String userName, String email, List<UserGroupRole>roles) {
-        this.id = id;
         this.userId = userId;
         this.password = password;
         this.userName = userName;
         this.email = email;
-        this.roles = roles;
     }
-
-    public User toUser(String encodedPassword,List<UserGroupRole> roles){
-        return new User(id,this.userId,encodedPassword,this.userName,this.email,roles);
-    }
-
 }

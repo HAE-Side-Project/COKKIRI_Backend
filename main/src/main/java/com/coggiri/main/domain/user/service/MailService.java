@@ -1,6 +1,8 @@
 package com.coggiri.main.domain.user.service;
 
 import com.coggiri.main.commons.Enums.EmailErrorStatus;
+import com.coggiri.main.commons.Enums.ErrorType;
+import com.coggiri.main.commons.exception.customException;
 import com.coggiri.main.domain.user.model.dto.request.VerificationInfo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -63,7 +65,7 @@ public class MailService {
             javaMailSender.send(message);
         }catch (MailException e){
             e.printStackTrace();
-            throw new IllegalArgumentException("메일 발송 중 오류가 발생했습니다.");
+            throw new customException(ErrorType.INTERNAL_MAIL_SEND);
         }
 
         LocalDateTime limitTime = LocalDateTime.now().plusMinutes(5);
@@ -73,30 +75,27 @@ public class MailService {
         return ret;
     }
 
-    public EmailErrorStatus verifyCode(String email, String code){
+    public void verifyCode(String email, String code){
         VerificationInfo info = verificationInfoCache.get(email);
         int ret = 0;
-        if(info == null) return EmailErrorStatus.NOT_EXIST;
+        if(info == null) throw new customException(ErrorType.INVALID_EMAIL_NOT_USED);
 
         if(LocalDateTime.now().isAfter(info.getExpireDate())){
             verificationInfoCache.remove(email);
-            return EmailErrorStatus.EXPIRED;
+            throw new customException(ErrorType.UNAUTHORIZED_EMAIL_EXPIRED);
         }
 
         info.addAttempts();
 
         if(info.getAttempts() >= 5){
             verificationInfoCache.remove(email);
-            return EmailErrorStatus.ILLEGAL_ACCESS;
+            throw new customException(ErrorType.INVALID_EMAIL_ACCESS_FREQUENT);
         }
 
         boolean isValid = code.equals(info.getCode());
-        if(isValid) {
-            verificationInfoCache.remove(email);
-            return EmailErrorStatus.VALID;
+        if(!isValid) {
+            throw new customException(ErrorType.INVALID_EMAIL_AUTH_CODE_DIFFERENT);
         }
-
-        return EmailErrorStatus.NOT_EQUAL;
     }
 
     @Scheduled(fixedRate = 300000)
