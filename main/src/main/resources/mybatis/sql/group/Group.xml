@@ -14,28 +14,47 @@
         );
     </insert>
 
-    <select id="countGroupTotalNum" resultType="int">
+    <select id="countGroupTotalNum" resultType="Long">
         select count(*) from groups;
     </select>
 
-    <select id="getGroupList" parameterType="map" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">
+<!--    <select id="getGroupList" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">-->
+<!--        select-->
+<!--            group_id as groupId,-->
+<!--            group_category as groupCategory,-->
+<!--            group_name as groupName,-->
+<!--            group_number as groupNumber,-->
+<!--            thumbnail_path as thumbnailPath,-->
+<!--            group_intro as groupIntro,-->
+<!--            group_rule as groupRule,-->
+<!--            group_condition as groupCondition-->
+<!--        From groups-->
+<!--        where 1=1-->
+<!--        <if test="keyword != null and keyword != ''">-->
+<!--            AND group_name LIKE CONCAT('%',#{keyword},'%')-->
+<!--        </if>-->
+<!--        Order By group_id ASC-->
+<!--        LIMIT #{page} OFFSET #{offset}-->
+<!--    </select>-->
+    <select id="getGroupList" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">
         select
-            group_id as groupId,
-            group_category as groupCategory,
-            group_name as groupName,
-            group_number as groupNumber,
-            thumbnail_path as thumbnailPath,
-            group_intro as groupIntro,
-            group_rule as groupRule,
-            group_condition as groupCondition
+        group_id as groupId,
+        group_category as groupCategory,
+        group_name as groupName,
+        group_number as groupNumber,
+        thumbnail_path as thumbnailPath,
+        group_intro as groupIntro,
+        group_rule as groupRule,
+        group_condition as groupCondition
         From groups
         where 1=1
         <if test="keyword != null and keyword != ''">
             AND group_name LIKE CONCAT('%',#{keyword},'%')
         </if>
         Order By group_id ASC
-        LIMIT #{page} OFFSET #{offset}
+        LIMIT #{limit} OFFSET #{offset}
     </select>
+
 
     <select id="getGroup" parameterType="Integer" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">
         select

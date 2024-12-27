@@ -109,25 +109,10 @@ public class GroupApiController {
             }
     )
     @ResponseBody
-    @GetMapping(value = "/getGroupList")
-    public ResponseEntity<Map<String,Object>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1")  int pageNum, @RequestParam(name = "offset",defaultValue = "0") int offset){
-        Map<String,Object> response = new HashMap<>();
-        SearchInFoDTO searchInFoDTO = new SearchInFoDTO(keyword,pageNum,offset);
-
-        try {
-            List<GroupInfoDTO> groupInfoList = groupService.getGroupList(searchInFoDTO);
-            int totalNum = groupService.countGroupTotalNum();
-            response.put("success",true);
-            response.put("message","그룹 리스트 반환 성공");
-            response.put("groupList",groupInfoList);
-            response.put("totalNum",totalNum);
-        }catch (Exception e){
-            response.put("success",false);
-            response.put("message",e.getMessage());
-            response.put("groupList",null);
-        }
-
-        return ResponseEntity.ok(response);
+    @GetMapping(value = "/list")
+    public ResponseEntity<CustomResponse<?>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1") Long pageNum){
+        SearchInFoDTO searchInFoDTO = new SearchInFoDTO(keyword,pageNum);
+        return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_GROUP_LIST,groupService.getGroupList(searchInFoDTO)));
     }
 
     @Operation(summary = "그룹 삭제",description = "그룹 삭제 API",

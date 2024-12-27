@@ -5,12 +5,11 @@ import lombok.Getter;
 @Getter
 public class SearchInFoDTO {
     private String keyword;
-    private int pageNum;
-    private int offset;
+    private Long pageNum;
+    private Long offset = 100L;
 
-    public SearchInFoDTO(String keyword, int pageNum,int offset){
+    public SearchInFoDTO(String keyword, Long pageNum){
         this.keyword = keyword;
         this.pageNum = pageNum;
-        this.offset = offset;
     }
 }

@@ -6,6 +6,7 @@ import com.coggiri.main.commons.Enums.TagType;
 import com.coggiri.main.commons.exception.customException;
 import com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO;
 import com.coggiri.main.domain.group.model.dto.request.GroupRegisterDTO;
+import com.coggiri.main.domain.group.model.dto.response.GroupListResponse;
 import com.coggiri.main.domain.task.model.dto.request.SearchInFoDTO;
 import com.coggiri.main.domain.group.model.entity.Group;
 import com.coggiri.main.domain.user.model.entity.User;
@@ -42,38 +43,17 @@ public class GroupService {
 
     private static final String[] ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "bmp", "webp"};
 
-    public List<GroupInfoDTO> getGroupList(SearchInFoDTO searchInFoDTO){
-        int page = searchInFoDTO.getPageNum()-1;
-        int offset = searchInFoDTO.getOffset();
+    @Transactional
+    public GroupListResponse getGroupList(SearchInFoDTO searchInFoDTO){
+        long page = searchInFoDTO.getPageNum();
+        long offset = searchInFoDTO.getOffset();
         if(page < 0) throw new IllegalArgumentException("잘못된 Page Number입니다.");
-        Map<String,Object> params = new HashMap<>();
-        params.put("keyword",searchInFoDTO.getKeyword());
-        params.put("page",offset);
-        params.put("offset",page*offset+2);
-        List<GroupInfoDTO> groupList =  groupRepository.getGroupList(params);
 
-        for(GroupInfoDTO group : groupList){
-            if(!group.getThumbnailPath().isEmpty()){
-                try {
-                    String filePath = uploadDirectory + "/" +group.getThumbnailPath();
-                    Path path = Paths.get(filePath);
+        System.out.println(offset + " " + ((page-1)*offset + 1));
 
-                    if (Files.exists(path)) {
-                        byte[] fileContent = Files.readAllBytes(path);
-                        String mimeType = Files.probeContentType(path);
-                        String base64Image = Base64.getEncoder().encodeToString(fileContent);
-
-                        group.setThumbnailBase64("data:"+mimeType+";base64,"+base64Image);
-                    }
-                }catch (Exception e){
-                    log.info("Thumbnail File Create Failed" + e.getMessage());
-                }
-            }
-            String[] tags = tagService.getTags(group.getGroupId(),TagType.GROUP.name());
-            if(tags.length > 0) group.setTags(tags);
-        }
-
-        return groupList;
+        List<GroupInfoDTO> groupList =  groupRepository.getGroupList(searchInFoDTO.getKeyword(),offset,(page-1)*offset + 2);
+        Long totalNum = groupRepository.countGroupTotalNum();
+        return GroupListResponse.of(page,totalNum,groupList);
     }
 
     public GroupInfoDTO getGroup(int groupId){
@@ -85,7 +65,7 @@ public class GroupService {
         return groupInfoDTO;
     }
 
-    public int countGroupTotalNum(){
+    public Long countGroupTotalNum(){
         return groupRepository.countGroupTotalNum();
     }
 
@@ -118,7 +98,7 @@ public class GroupService {
             }
         }
 
-        Group groupInfo = new Group(groupRegisterDTO,fileName);
+        Group groupInfo = new Group(groupRegisterDTO,"/uploads/" + fileName);
         // 그룹 정보 저장
         if(groupRepository.createGroup(groupInfo) == 0){
             throw new customException(ErrorType.INTERNAL_GROUP_CREATE);

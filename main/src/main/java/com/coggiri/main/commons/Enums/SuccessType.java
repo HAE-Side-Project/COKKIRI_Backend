@@ -18,6 +18,7 @@ public enum SuccessType {
     SUCCESS_EMAIL_SEND(HttpStatus.OK,2004,"인증번호 발급에 성공했습니다."),
     SUCCESS_EMAIL_VERIFY(HttpStatus.OK,2005,"인증 성공했습니다."),
     SUCCESS_VALIDATE_ID(HttpStatus.OK,2006,"아이디 중복검사 성공했습니다"),
+    SUCCESS_GROUP_LIST(HttpStatus.OK,2007,"그룹 리스트 조회에 성공했습니다."),
     /*
     *  201 create (2100 ~ 2199)
     * */
