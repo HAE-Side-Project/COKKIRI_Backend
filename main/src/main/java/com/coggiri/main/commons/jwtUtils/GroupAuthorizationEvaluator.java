@@ -1,6 +1,8 @@
 package com.coggiri.main.commons.jwtUtils;
 
+import com.coggiri.main.commons.Enums.ErrorType;
 import com.coggiri.main.commons.Enums.Role;
+import com.coggiri.main.commons.exception.customException;
 import com.coggiri.main.domain.user.model.entity.User;
 import com.coggiri.main.domain.user.model.entity.UserGroupRole;
 import com.coggiri.main.domain.user.repository.UserRepository;
@@ -32,50 +34,46 @@ public class GroupAuthorizationEvaluator {
     public void hasGroupRole(JoinPoint joinPoint, RequireGroupRole requireGroupRole) throws AccessDeniedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication == null || !authentication.isAuthenticated()) throw new AccessDeniedException("인증되지 않았습니다.");
+        if(authentication == null || !authentication.isAuthenticated()) throw new customException(ErrorType.UNAUTHORIZED);
 
         Object[] args = joinPoint.getArgs();
         String groupIdParameterName = requireGroupRole.groupIdParameter();
-        int groupId = extractGroupId(args,groupIdParameterName);
+        Long groupId = extractGroupId(args,groupIdParameterName);
 
         String userName = authentication.getName();
         Optional<User> userInfo = userRepository.findByUsername(userName);
-        if(userInfo.isEmpty()) throw new AccessDeniedException("사용자 정보가 없습니다.");
+        if(userInfo.isEmpty()) throw new customException(ErrorType.NOT_FOUND_USER);
 
         log.info("userId: " + userInfo.get().getId());
         log.info("groupId: " + groupId);
 
         Optional<UserGroupRole> userGroupRoleInfo = userRepository.findGroupRoleByUserId(userInfo.get().getId(),groupId);
-        if(userGroupRoleInfo.isEmpty()) throw new AccessDeniedException("그룹에 대한 사용자 정보가 없습니다.");
+        if(userGroupRoleInfo.isEmpty()) throw new customException(ErrorType.NOT_FOUND_USER_GROUP);
 
         UserGroupRole userGroupRole = userGroupRoleInfo.get();
         Role userRole = Role.valueOf(userGroupRole.getRole());
         log.info("role: " + userRole);
 
-        if(userRole.getLevel() > requireGroupRole.value().getLevel()) throw new AccessDeniedException("해당 그룹에 대한 권한이 없습니다.");
+        if(userRole.getLevel() > requireGroupRole.value().getLevel()) throw new customException(ErrorType.UNAUTHORIZED_USER_GROUP);
     }
 
-    private Integer extractGroupId(Object[] args, String parameterName) {
+    private Long extractGroupId(Object[] args, String parameterName) {
         for (Object arg : args) {
-            if (arg instanceof Map) {
-                Map<String, Object> map = (Map<String, Object>) arg;
-                Object groupId = map.get(parameterName);
-                if (groupId instanceof Integer) {
-                    return (Integer) groupId;
-                } else if (groupId instanceof String) {
-                    return Integer.parseInt((String) groupId);
-                }
+            if (arg instanceof Long) {
+                return (Long) arg;
+            } else if (arg instanceof String) {
+                return Long.parseLong((String) arg);
             }
 
             try {
                 Method method = arg.getClass().getMethod("get" +
                         parameterName.substring(0, 1).toUpperCase() +
                         parameterName.substring(1));
-                return (Integer) method.invoke(arg);
+                return (Long) method.invoke(arg);
             } catch (Exception e) {
                 continue;
             }
         }
-        throw new IllegalArgumentException("Group ID를 찾을 수 없습니다.");
+        throw new customException(ErrorType.INVALID_GROUP_ID);
     }
 }

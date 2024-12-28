@@ -66,7 +66,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken){
         Claims claims = parseClaims(accessToken);
         String userName = claims.getSubject();
-        Integer userId = claims.get("userId",Integer.class);
+        Long userId = claims.get("userId",Long.class);
 
         List<UserGroupRole> userRoles = userRepository.findGroupRolesByUserId(userId);
 
