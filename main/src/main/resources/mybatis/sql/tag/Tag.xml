@@ -24,13 +24,13 @@
         </foreach>
     </insert>
 
-    <select id="getGroupTag" parameterType="Integer" resultType="string">
+    <select id="getGroupTag" parameterType="Long" resultType="string">
         SELECT tag_name
         FROM group_tag
         WHERE group_id = #{groupId}
     </select>
 
-    <select id="getTaskTag" parameterType="Integer" resultType="string">
+    <select id="getTaskTag" parameterType="Long" resultType="string">
         SELECT tag_name
         FROM task_tag
         WHERE task_id = #{taskId}

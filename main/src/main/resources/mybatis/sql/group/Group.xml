@@ -56,7 +56,7 @@
     </select>
 
 
-    <select id="getGroup" parameterType="Integer" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">
+    <select id="getGroup" parameterType="Long" resultType="com.coggiri.main.domain.group.model.dto.request.GroupInfoDTO">
         select
             group_id as groupId,
             group_category as groupCategory,
@@ -67,7 +67,7 @@
         WHERE group_id = #{groupId}
     </select>
 
-    <delete id="deleteGroup" parameterType="Integer">
+    <delete id="deleteGroup" parameterType="Long">
         delete from groups
         where group_id = #{groupId};
     </delete>

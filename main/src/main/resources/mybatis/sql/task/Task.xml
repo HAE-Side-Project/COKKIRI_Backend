@@ -24,7 +24,7 @@
             </foreach>
     </insert>
 
-    <delete id="deleteTask" parameterType="int">
+    <delete id="deleteTask" parameterType="Long">
         DELETE from task
         WHERE task_id = ${taskId}
     </delete>

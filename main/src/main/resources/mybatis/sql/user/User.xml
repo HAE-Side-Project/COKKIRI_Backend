@@ -28,7 +28,7 @@
         );
     </insert>
 
-    <delete id="deleteUserRoleByGroupId" parameterType="int">
+    <delete id="deleteUserRoleByGroupId" parameterType="Long">
         DELETE from user_group_role
         where group_id = #{groupId}
     </delete>
