@@ -1,14 +1,18 @@
 package com.coggiri.main.domain.group.model.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema
 @Getter
 public class GroupInfoDTO {
     @Schema(example = "1",description = "pk")
-    private int groupId;
+    private Long groupId;
     @Schema(example = "0",defaultValue = "0",allowableValues = {"0","1"},description = "0: 스터디, 1: 프로젝트")
     private int groupCategory;
     @Schema(example = "TestStudy",description = "그룹 이름")
@@ -30,15 +34,4 @@ public class GroupInfoDTO {
     @Schema(example = "",description = "이미지 파일 데이터")
     private String thumbnailBase64;
 
-    GroupInfoDTO(int groupId, int groupCategory, String groupName, int groupNumber,String thumbnailPath,
-                 String groupIntro,String groupRule,String groupCondition){
-        this.groupId = groupId;
-        this.groupCategory = groupCategory;
-        this.groupName = groupName;
-        this.groupNumber = groupNumber;
-        this.thumbnailPath = thumbnailPath;
-        this.groupIntro = groupIntro;
-        this.groupRule = groupRule;
-        this.groupCondition = groupCondition;
-    }
 }

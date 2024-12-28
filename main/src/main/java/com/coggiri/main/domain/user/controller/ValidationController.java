@@ -223,7 +223,7 @@ public class ValidationController {
             )
     })
     @ResponseBody
-    @GetMapping("/email/verify")
+    @PostMapping("/email/verify")
     public ResponseEntity<CustomResponse<?>> validateCode(@Parameter(description = "이메일 정보") @RequestBody MailDTO mailDTO){
         mailService.verifyCode(mailDTO.getEmail(),mailDTO.getAuthCode());
         return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_EMAIL_VERIFY));

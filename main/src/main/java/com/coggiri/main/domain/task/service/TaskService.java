@@ -26,22 +26,18 @@ public class TaskService {
 
         // 태스크 등록
         taskRepository.createTask(task);
-        log.info("task 등록");
         // 태스크 태그 등록
         if(taskRegisterDTO.getTags().length > 0) {
             tagService.createTag(task.getTaskId(), taskRegisterDTO.getTags(), TagType.TASK.name());
-            log.info("task 태그 등록");
         }
 
         // 태스크 관계 등록
         TaskInfoDTO taskInfoDTO = new TaskInfoDTO(task.getTaskId(),taskRegisterDTO.getGroupId(),taskRegisterDTO.getUserId());
         taskRepository.addTaskRole(taskInfoDTO);
-        log.info("task 관계 등록");
-
     }
 
     @Transactional
-    public void deleteTask(int taskId){
+    public void deleteTask(Long taskId){
         taskRepository.deleteTask(taskId);
     }
 }

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository {
     int createTask(Task task);
-    int deleteTask(int taskId);
+    int deleteTask(Long taskId);
     int addTaskRole(TaskInfoDTO taskInfoDTO);
 }

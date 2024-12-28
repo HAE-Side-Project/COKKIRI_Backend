@@ -13,11 +13,11 @@ public interface UserRepository {
     int register(User userRegisterDTO);
     int delete(Long userId);
     int addUserRole(UserGroupRole userGroupRole);
-    void deleteUserRoleByGroupId(int groupId);
+    void deleteUserRoleByGroupId(Long groupId);
     void changePassword(User user);
     Optional<User> findByUsername(String userId);
     Optional<User> findByUserId(Long userId);
     Optional<User> findByEmail(String email);
-    List<UserGroupRole> findGroupRolesByUserId(int userId);
-    Optional<UserGroupRole> findGroupRoleByUserId(@Param("userId") int userId,@Param("groupId") int groupId);
+    List<UserGroupRole> findGroupRolesByUserId(Long userId);
+    Optional<UserGroupRole> findGroupRoleByUserId(@Param("userId") Long userId,@Param("groupId") Long groupId);
 }

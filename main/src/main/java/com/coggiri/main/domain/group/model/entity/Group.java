@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class Group {
-    private int groupId;
+    private Long groupId;
     private int groupCategory;
     private String groupName;
     private String groupIntro;
@@ -15,7 +15,7 @@ public class Group {
     private String thumbnailPath;
 
 
-    Group(int groupId, int groupCategory, String groupName, String groupIntro,
+    Group(Long groupId, int groupCategory, String groupName, String groupIntro,
           String groupRule, String groupCondition,int groupNumber ,String thumbnailPath){
         this.groupId = groupId;
         this.groupCategory = groupCategory;

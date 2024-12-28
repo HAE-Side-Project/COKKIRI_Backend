@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 
 public class User implements UserDetails {
-    private int id;
+    private Long id;
     private String userId;
     private String password;
     private String userName;
@@ -21,7 +21,7 @@ public class User implements UserDetails {
     private List<UserGroupRole> roles = new ArrayList<>();
 
 
-    public User(int id,String userId,String password,String userName,String email){
+    public User(Long id,String userId,String password,String userName,String email){
         this.id = id;
         this.userId = userId;
         this.password = password;
@@ -29,7 +29,7 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public User(int id,String userId,String password,String userName,String email,List<UserGroupRole> roles){
+    public User(Long id,String userId,String password,String userName,String email,List<UserGroupRole> roles){
         this.id = id;
         this.userId = userId;
         this.password = password;
@@ -46,9 +46,9 @@ public class User implements UserDetails {
         this.roles = new ArrayList<>();
     }
 
-    public Role getRoleForGroup(Integer groupId) {
+    public Role getRoleForGroup(Long groupId) {
         return roles.stream()
-                .filter(gr -> Integer.valueOf(gr.getGroupId()).equals(groupId))
+                .filter(gr -> Long.valueOf(gr.getGroupId()).equals(groupId))
                 .map(UserGroupRole::getRole)
                 .map(roleStr -> Role.valueOf(roleStr.startsWith("ROLE_") ? roleStr : "ROLE_" + roleStr))
                 .findFirst()
@@ -69,7 +69,7 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-    public int getId(){
+    public Long getId(){
         return this.id;
     }
 

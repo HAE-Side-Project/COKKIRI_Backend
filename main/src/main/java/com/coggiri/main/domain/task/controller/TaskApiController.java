@@ -1,15 +1,22 @@
 package com.coggiri.main.domain.task.controller;
 
+import com.coggiri.main.commons.Enums.SuccessType;
+import com.coggiri.main.commons.response.CustomResponse;
 import com.coggiri.main.domain.task.model.dto.request.TaskRegisterDTO;
 import com.coggiri.main.domain.tag.service.TagService;
 import com.coggiri.main.domain.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,71 +35,65 @@ public class TaskApiController {
     @Autowired
     private TagService tagService;
 
-    @Operation(summary = "태스크 생성",description = "태스크 생성 API",
-        responses = {
+    @Operation(summary = "태스크 생성",description = "태스크 생성 API")
+    @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
-                    description = "태스크 생성",
+                    responseCode = "2103",
+                    description = "태스크 추가 성공",
                     content = @Content(
-                            schemaProperties = {
-                                    @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                                    @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지",example = "비밀번호 변경 완료" ))
-                            }
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 201,
+                                        "code": 2103,
+                                        "message": "태스크 추가에 성공했습니다."
+                                    }
+                                    """
+                            )
                     )
-            )}
-    )
-    @PostMapping("createTask")
-    public ResponseEntity<Map<String,Object>> createTask(@RequestBody TaskRegisterDTO taskRegisterDTO){
-        Map<String,Object> response = new HashMap<>();
-
-        try {
-            taskService.createTask(taskRegisterDTO);
-            response.put("success",true);
-            response.put("message","task 등룍 완료");
-        }catch (Exception e){
-            response.put("success",true);
-            response.put("message",e.getMessage());
-        }
-
-        return ResponseEntity.ok(response);
+            )
+    })
+    @PostMapping("create")
+    public ResponseEntity<CustomResponse<?>> createTask(@RequestBody TaskRegisterDTO taskRegisterDTO){
+        taskService.createTask(taskRegisterDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CustomResponse.success(SuccessType.SUCCESS_TASK_CREATE));
     }
 
     @Operation(summary = "태스크 삭제", description = "태스크 삭제 API",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "태스크 삭제",
-                            content = @Content(
-                                    schemaProperties = {
-                                            @SchemaProperty(name = "success", schema = @Schema(type = "boolean",description = "성공 여부")),
-                                            @SchemaProperty(name = "message", schema = @Schema(type = "string",description = "메세지",example = "태스크 삭제 완료" ))
+            parameters = {
+                    @Parameter(
+                            name = "taskId",
+                            description = "삭제할 Task Id",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "Long")
+                    )
+    })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "2011",
+                    description = "태스크 삭제 성공했습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 200,
+                                        "code": 2011,
+                                        "message": "태스크 삭제 성공했습니다."
                                     }
+                                    """
                             )
-                    )},
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schemaProperties = {
-                                            @SchemaProperty(name = "taskId", schema = @Schema(type = "string", description = "task pk",example = "1"))
-                            })
-                    }
+                    )
             )
-    )
-    @PostMapping("deleteTask")
-    public ResponseEntity<Map<String,Object>> deleteTask(@RequestBody Map<String,Object> map){
-        Map<String,Object> response = new HashMap<>();
-        String taskId = map.get("taskId").toString();
-        try{
-            taskService.deleteTask(Integer.parseInt(taskId));
-            response.put("success",true);
-            response.put("message","태스크 삭제 완료");
-        }catch (Exception e){
-            response.put("success",false);
-            response.put("message",e.getMessage());
-        }
-
-        return ResponseEntity.ok(response);
+    })
+    @DeleteMapping("/delete/{taskId}")
+    public ResponseEntity<CustomResponse<?>> deleteTask(@PathVariable("taskId") Long taskId){
+        taskService.deleteTask(taskId);
+        return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_TASK_DELETE));
     }
     
 }

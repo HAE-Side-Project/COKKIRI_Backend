@@ -51,7 +51,7 @@ public class UserService{
             throw new customException(ErrorType.INTERNAL_SERVER);
         }
 
-        if(addUserRole(new UserGroupRole(user.getId(),1, Role.USER.name())) == 0){
+        if(addUserRole(new UserGroupRole(user.getId(),1L, Role.USER.name())) == 0){
             throw new customException(ErrorType.INTERNAL_SERVER);
         }
     }
@@ -69,7 +69,7 @@ public class UserService{
         return userRepository.addUserRole(userGroupRole);
     }
 
-    public void deleteUserRoleByGroupId(int groupId){
+    public void deleteUserRoleByGroupId(Long groupId){
         userRepository.deleteUserRoleByGroupId(groupId);
     }
 

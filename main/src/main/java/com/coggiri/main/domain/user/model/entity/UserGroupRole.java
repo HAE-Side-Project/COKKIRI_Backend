@@ -9,9 +9,9 @@ public class UserGroupRole {
     @Schema(example = "1",description = "pk")
     private int id;
     @Schema(example = "1",description = "user pk")
-    private int userId;
+    private Long userId;
     @Schema(example = "1",description = "group pk")
-    private int groupId;
+    private Long groupId;
     @Schema(example = "USER",description = "권한")
     private String role;
 
@@ -19,7 +19,7 @@ public class UserGroupRole {
 
     }
 
-    public UserGroupRole(int userId, int groupId, String role){
+    public UserGroupRole(Long userId, Long groupId, String role){
         this.userId = userId;
         this.groupId = groupId;
         this.role = role;

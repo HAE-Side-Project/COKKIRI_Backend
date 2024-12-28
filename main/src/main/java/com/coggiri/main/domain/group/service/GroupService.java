@@ -47,20 +47,23 @@ public class GroupService {
     public GroupListResponse getGroupList(SearchInFoDTO searchInFoDTO){
         long page = searchInFoDTO.getPageNum();
         long offset = searchInFoDTO.getOffset();
-        if(page < 0) throw new IllegalArgumentException("잘못된 Page Number입니다.");
+        if(page < 1) throw new customException(ErrorType.INVALID_PAGE_NUMBER);
 
-        System.out.println(offset + " " + ((page-1)*offset + 1));
-
-        List<GroupInfoDTO> groupList =  groupRepository.getGroupList(searchInFoDTO.getKeyword(),offset,(page-1)*offset + 2);
+        List<GroupInfoDTO> groupList =  groupRepository.getGroupList(searchInFoDTO.getKeyword(),offset,(page-1)*offset + 1);
         Long totalNum = groupRepository.countGroupTotalNum();
         return GroupListResponse.of(page,totalNum,groupList);
     }
 
-    public GroupInfoDTO getGroup(int groupId){
-        GroupInfoDTO groupInfoDTO = groupRepository.getGroup(groupId);
-        String[] tags = tagService.getTags(groupId,TagType.GROUP.name());
-
-        groupInfoDTO.setTags(tags);
+    public GroupInfoDTO getGroup(Long groupId){
+        GroupInfoDTO groupInfoDTO = null;
+        try {
+            groupInfoDTO = groupRepository.getGroup(groupId);
+            String[] tags = tagService.getTags(groupId,TagType.GROUP.name());
+            groupInfoDTO.setTags(tags);
+        }catch (Exception e){
+            System.out.println("error: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         return groupInfoDTO;
     }
@@ -114,25 +117,19 @@ public class GroupService {
     }
 
     @Transactional
-    public boolean deleteGroup(int groupId){
+    public void deleteGroup(Long groupId){
         GroupInfoDTO groupInfoDTO = getGroup(groupId);
-
         if(!groupInfoDTO.getThumbnailPath().isEmpty()){
             String filePath = uploadDirectory + "/" + groupInfoDTO.getThumbnailPath();
-            log.info("filePath: " + filePath);
             File file = new File(filePath);
-            if(!file.exists()) throw new RuntimeException("존재하지 않는 썸네일 파일입니다.");
-            if(!file.delete()) throw new RuntimeException("썸네일 파일 삭제 실패");
+            if(!file.exists()) throw new customException(ErrorType.NOT_FOUND_THUMBNAIL);
+            if(!file.delete()) throw new customException(ErrorType.INTERNAL_THUMBNAIL_DELETE);
         }
-
         if(groupInfoDTO.getTags().length > 0) {
             tagService.deleteTag(groupInfoDTO.getGroupId(),groupInfoDTO.getTags(),TagType.GROUP.name());
         }
-
         userService.deleteUserRoleByGroupId(groupId);
-        if(groupRepository.deleteGroup(groupId) == 0) throw new RuntimeException("데이터베이스 삭제 실패");
-
-        return true;
+        if(groupRepository.deleteGroup(groupId) == 0) throw new customException(ErrorType.INTERNAL_THUMBNAIL_DELETE);
     }
 
     private String getFileExtension(String filename) {

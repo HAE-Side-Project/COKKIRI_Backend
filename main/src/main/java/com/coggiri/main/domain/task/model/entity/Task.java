@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 public class Task {
     @Schema(example = "1",description = "태스크 pk")
-    private int taskId;
+    private Long taskId;
     @Schema (example = "true",description = "개인 태스크:false, 그룹 태스크:true")
     private boolean groupOption;
     @Schema(example = "true",description = "완료 여부")
@@ -24,7 +24,7 @@ public class Task {
     @Schema (example = "2024-12-02", description = "마감날짜")
     private LocalDate dueDate;
 
-    Task(int taskId, boolean groupOption, boolean achieveCondition,
+    Task(Long taskId, boolean groupOption, boolean achieveCondition,
          String taskName, int taskType, LocalDate registerDate, LocalDate dueDate){
         this.taskId = taskId;
         this.groupOption = groupOption;

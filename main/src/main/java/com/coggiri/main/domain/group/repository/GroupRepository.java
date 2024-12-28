@@ -11,8 +11,8 @@ import java.util.Map;
 @Repository
 public interface GroupRepository {
     int createGroup(Group group);
-    int deleteGroup(int groupId);
+    int deleteGroup(Long groupId);
     Long countGroupTotalNum();
-    GroupInfoDTO getGroup(int groupId);
+    GroupInfoDTO getGroup(Long groupId);
     List<GroupInfoDTO> getGroupList(@Param("keyword") String keyword,@Param("limit") Long limit,@Param("offset") Long offset);
 }

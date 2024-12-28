@@ -10,6 +10,7 @@ import com.coggiri.main.domain.task.model.dto.request.SearchInFoDTO;
 import com.coggiri.main.domain.group.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.*;
 //import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -88,26 +89,64 @@ public class GroupApiController {
     }
 
     @Operation(summary = "그룹 리스트 정보 리스트", description = "그룹 정보 리스트 반환 API",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "그룹 리스트 반환 API",
-                            content = @Content(
-                                    schemaProperties = {
-                                            @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
-                                            @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환")),
-                                            @SchemaProperty(name = "groupList",schema = @Schema(implementation = GroupInfoDTO.class,description = "그룹 정보 리스트")),
-                                            @SchemaProperty(name = "totalNum",schema = @Schema(type = "int",description = "그룹 전체 개수"))
-                                    }
-                            )
-                    )
-            },
             parameters = {
                     @Parameter(name = "keyword",description = "검색어",example = "Study"),
-                    @Parameter(name = "pageNum",description = "페이지 개수", example = "1"),
-                    @Parameter(name = "offset",description = "가져올 데이터 개수", example = "20")
+                    @Parameter(name = "pageNum",description = "페이지 개수", example = "1")
             }
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "2007",
+                    description = "그룹 리스트 조회 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    "status": 200,
+                                        "code": 2007,
+                                        "message": "그룹 리스트 조회에 성공했습니다.",
+                                        "data": {
+                                            "pageNum": 1,
+                                            "totalNum": 1,
+                                            "groupInfoDTOList": [
+                                                {
+                                                    "groupId": 10,
+                                                    "groupCategory": 0,
+                                                    "groupName": "tempStudy",
+                                                    "groupNumber": 1,
+                                                    "thumbnailPath": "D:/Code/git/COKKIRI_Backend/main/app/uploads/f38a3aec-abb5-491a-840d-12f330edd859.png",
+                                                    "groupIntro": "그룹 생성테스트입니다.",
+                                                    "groupRule": "없습니다.",
+                                                    "groupCondition": "가입조건은 없습니다",
+                                                    "tags": null,
+                                                    "thumbnailBase64": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "4016",
+                    description = "잘못된 페이지 숫자입니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 400,
+                                        "code": 4016,
+                                        "message": "잘못된 페이지 숫자입니다."
+                                    }
+                                    """
+                            )
+                    )
+            )
+    })
     @ResponseBody
     @GetMapping(value = "/list")
     public ResponseEntity<CustomResponse<?>> getGroupList(@RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "pageNum", defaultValue = "1") Long pageNum){
@@ -116,44 +155,74 @@ public class GroupApiController {
     }
 
     @Operation(summary = "그룹 삭제",description = "그룹 삭제 API",
-            responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "그룹 삭제 API",
-                        content = @Content(
-                                schemaProperties = {
-                                        @SchemaProperty(name = "success",schema = @Schema(type = "boolean",description = "성공 여부")),
-                                        @SchemaProperty(name = "message",schema = @Schema(type = "string",description = "성공 및 오류메세지 반환",example = "그룹 삭제 완료")),
-                                }
-                        )
+            parameters = {
+                @Parameter(
+                        name = "groupId",
+                        description = "삭제할 그룹의 Id",
+                        required = true,
+                        in = ParameterIn.PATH,
+                        schema = @Schema(type = "Long")
                 )
-            },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schemaProperties = {
-                                            @SchemaProperty(name = "groupId", schema = @Schema(type = "string", description = "그룹 pk",example = "1"))
+            })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "2008",
+                    description = "그룹 삭제 성공했습니다",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 200,
+                                        "code": 2008,
+                                        "message": "그룹 삭제 성공했습니다"
                                     }
+                                    """
                             )
-                    }
-            ))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "4403",
+                    description = "썸네일이 존재하지 않습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 404,
+                                        "code": 4403,
+                                        "message": "썸네일이 존재하지 않습니다."
+                                    }
+                                    """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "5003",
+                    description = "썸네일 파일 삭제 실패했습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CustomResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                    {
+                                        "status": 500,
+                                        "code": 5003,
+                                        "message": "썸네일 파일 삭제 실패했습니다."
+                                    }
+                                    """
+                            )
+                    )
+            )
+    })
     @RequireGroupRole(value=Role.ADMIN, groupIdParameter = "groupId")
     @ResponseBody
-    @PostMapping("/deleteGroup")
-    public ResponseEntity<Map<String,Object>> deleteGroup(@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map){
-        Map<String, Object> response = new HashMap<>();
-        String groupId = map.get("groupId").toString();
-        try{
-            if(groupService.deleteGroup(Integer.parseInt(groupId))){
-                response.put("success",true);
-                response.put("message","그룹 삭제 완료");
-            }
-        }catch (Exception e){
-            response.put("success",false);
-            response.put("message",e.getMessage());
-        }
-        return ResponseEntity.ok(response);
+    @DeleteMapping("/delete/{groupId}")
+    public ResponseEntity<CustomResponse<?>> deleteGroup(@PathVariable("groupId") Long groupId){
+        groupService.deleteGroup(groupId);
+        return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_GROUP_DELETE));
     }
 
 }

@@ -297,7 +297,7 @@ public class UserApiController {
                     )
             ),
             @ApiResponse(
-                    responseCode = "400",
+                    responseCode = "4009",
                     description = "토큰이 존재하지 않습니다.",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,

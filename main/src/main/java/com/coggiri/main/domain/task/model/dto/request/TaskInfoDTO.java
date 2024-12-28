@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 public class TaskInfoDTO {
-    private int taskId;
-    private int groupId;
-    private int[] userId;
+    private Long taskId;
+    private Long groupId;
+    private Long[] userId;
     @Setter
     private String[] tags;
 
@@ -15,7 +15,7 @@ public class TaskInfoDTO {
 
     }
 
-    public TaskInfoDTO(int taskId, int groupId, int[] userId){
+    public TaskInfoDTO(Long taskId, Long groupId, Long[] userId){
         this.taskId = taskId;
         this.groupId = groupId;
         this.userId = userId;
