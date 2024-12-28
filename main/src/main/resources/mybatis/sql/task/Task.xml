@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coggiri.main.domain.task.repository.TaskRepository">
+    <insert id="createTask" parameterType="com.coggiri.main.domain.task.model.entity.Task" useGeneratedKeys="true" keyColumn="task_id" keyProperty="taskId">
+        INSERT INTO task(group_option,achieve_condition,task_name,task_type,register_date,dueDate)
+        Values(
+            #{groupOption},
+            #{achieveCondition},
+            #{taskName},
+            #{taskType},
+            #{registerDate},
+            #{dueDate}
+        );
+    </insert>
+
+    <insert id="addTaskRole" parameterType="com.coggiri.main.domain.task.model.dto.request.TaskInfoDTO">
+        INSERT INTO task_user_group_role(task_id,user_id,group_id)
+        Values
+            <foreach item="uId" collection="userId" separator=",">
+                (#{taskId},
+                 #{uId},
+                 #{groupId}
+                 )
+            </foreach>
+    </insert>
+
+    <delete id="deleteTask" parameterType="Long">
+        DELETE from task
+        WHERE task_id = ${taskId}
+    </delete>
+</mapper>

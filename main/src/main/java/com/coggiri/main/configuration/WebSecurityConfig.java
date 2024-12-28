@@ -1,8 +1,9 @@
 package com.coggiri.main.configuration;
 
 import com.coggiri.main.configuration.filter.JwtAuthenticationFilter;
-import com.coggiri.main.mvc.service.UserService;
-import com.coggiri.main.jwtUtils.JwtTokenProvider;
+
+import com.coggiri.main.commons.jwtUtils.JwtTokenProvider;
+import com.coggiri.main.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @EnableWebSecurity

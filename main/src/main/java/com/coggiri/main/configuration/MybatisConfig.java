@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "com.coggiri.main.mvc.repository")
+@MapperScan(basePackages = "com.coggiri.main.domain")
 public class MybatisConfig {
     @Bean
     public SqlSessionFactory sqlSessionFactory(@Autowired DataSource dataSource, ApplicationContext applicationContext) throws Exception{
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        factoryBean.setMapperLocations(applicationContext.getResources("classpath:mybatis/sql/*.xml"));
+        factoryBean.setMapperLocations(applicationContext.getResources("classpath:mybatis/sql/**/*.xml"));
         return factoryBean.getObject();
     }
 }

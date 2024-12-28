@@ -1,6 +1,6 @@
 package com.coggiri.main.configuration.filter;
 
-import com.coggiri.main.jwtUtils.JwtTokenProvider;
+import com.coggiri.main.commons.jwtUtils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
