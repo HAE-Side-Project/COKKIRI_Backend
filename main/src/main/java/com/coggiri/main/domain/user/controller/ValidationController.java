@@ -96,7 +96,7 @@ public class ValidationController {
             )
     })
     @ResponseBody
-    @GetMapping("/email/send")
+    @PostMapping("/email/send")
     public ResponseEntity<CustomResponse<?>> sendVerificationEmail(@RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException{
 
         if(userService.findUserByEmail(mailDTO.getEmail()).isPresent()){
@@ -261,7 +261,7 @@ public class ValidationController {
             ),
             @ApiResponse(
                     responseCode = "4014",
-                    description = "메일 전송 실패",
+                    description = "이미 존재하는 아이디입니다",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CustomResponse.class),

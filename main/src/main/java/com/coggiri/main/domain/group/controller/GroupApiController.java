@@ -84,6 +84,7 @@ public class GroupApiController {
                                                       @Parameter(description = "이미지파일") @RequestPart(value = "image",required = false) MultipartFile image,
                                                          HttpServletRequest request){
         String token = request.getHeader("Authorization").substring(7);
+
         groupService.createGroup(groupRegisterDTO,image,token);
         return ResponseEntity.status(HttpStatus.OK).body(CustomResponse.success(SuccessType.SUCCESS_GROUP_CREATE));
     }
