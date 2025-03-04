@@ -13,7 +13,8 @@
 # Architecture
 ![coggiriMap drawio](https://github.com/user-attachments/assets/84ddcff8-1d23-499f-bc1c-84f01d2ecbea)
 # DB 
-![image](https://github.com/user-attachments/assets/8989746c-bd21-4e1d-91df-307d0b639c56)
+![image](https://github.com/user-attachments/assets/e2d273a1-c1ea-410b-b5f7-e5fa918b1fad)
+
 
 
 # 사용 기술
